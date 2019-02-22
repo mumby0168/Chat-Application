@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Server.Args;
 using Server.Controllers;
+using Server.Controllers.Interfaces;
 
 namespace Server
 {

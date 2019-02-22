@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Server.Controllers.Interfaces;
 using Server.Models;
 using Sockets.DataStructures.Messages;
 using Sockets.DataStructures.Services.Interfaces;
-using Server.Controllers.Interfaces;
 
 namespace Server.Controllers
 {
@@ -36,11 +36,6 @@ namespace Server.Controllers
                 return true;
             }
             return false;
-        }
-
-        bool IConnectionController.TryAddUser(TcpClient newClient)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

@@ -2,6 +2,7 @@
 
 using Microsoft.Practices.Unity;
 using Server.Controllers;
+using Server.Controllers.Interfaces;
 using Server.Extensions;
 using Sockets.DataStructures.Services;
 using Sockets.DataStructures.Services.Interfaces;
