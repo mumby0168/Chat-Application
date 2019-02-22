@@ -1,10 +1,15 @@
+using System.IO;
+using System.Linq;
+using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Server.Controllers.Interfaces;
 using Server.Models;
+using Sockets.DataStructures.Base;
 using Sockets.DataStructures.Messages;
 using Sockets.DataStructures.Services.Interfaces;
+using Server.Extensions;
 
 namespace Server.Controllers
 {
@@ -15,7 +20,7 @@ namespace Server.Controllers
         public ConnectionController(INetworkDataService networkDataService)
         {
                 ClientConnections = new List<IClientConnection>();
-            _networkDataService = networkDataService;
+                _networkDataService = networkDataService;
         }
         public List<IClientConnection> ClientConnections { get; private set;}
 
@@ -23,19 +28,110 @@ namespace Server.Controllers
         {
             var stream = newClient.GetStream();
 
-            var header = await _networkDataService.ReadAndDecodeHeader(stream);
+            stream.ReadTimeout = 1000;
 
-            var message = await _networkDataService.ReadAndDecodeMessage(header, stream);
+            IMessage message;
 
-            if(message is NewUserOnlineMessage)
+            try{
+                var header = await _networkDataService.ReadAndDecodeHeader(stream);
+
+                message = await _networkDataService.ReadAndDecodeMessage(header, stream);
+            }
+            catch(Exception e)
             {
-                var newUserMessage = message as NewUserOnlineMessage;
+                System.Console.WriteLine(e.Message);
+                return false;
+            }
 
-                ClientConnections.Add(new ClientConnection(newUserMessage.UserId, stream));
+            if(message is ConnectRequestMessage)
+            {
+                var connectRequestMessage = message as ConnectRequestMessage;
+
+                var newMsg = new NewUserOnlineMessage(){UserId = connectRequestMessage.UserId };
+
+                WriteMessageToAllClients(newMsg);
+
+                ClientConnections.Add(new ClientConnection(connectRequestMessage.UserId, stream));
+
+                System.Console.WriteLine("Client joined with ID: " + connectRequestMessage.UserId);
 
                 return true;
             }
             return false;
+        }
+
+        public void BeginReadingFromClients()
+        {
+            Task.Run(async () => {
+                while(true)
+                {
+                    var clients = ClientConnections.TakeCopy();
+
+                    foreach(var client in clients)
+                    {
+                        try
+                        {
+                            if(client.Stream.DataAvailable)
+                            {
+                                var header = await _networkDataService.ReadAndDecodeHeader(client.Stream);
+
+                                var message = await _networkDataService.ReadAndDecodeMessage(header, client.Stream);
+
+                                await ProcessMessage(message);
+                            }
+                        }
+                        catch (System.Exception)
+                        {
+                            
+                        }
+                    }
+                }
+            });
+        }
+
+        private async Task WriteMessageToClient(int clientId, IMessage message)
+        {
+            var client = ClientConnections.TakeCopy().FirstOrDefault(c => c.UserId == clientId);
+
+            System.Console.WriteLine("Writing to message to client: " + clientId);
+
+            await Write(client, message);
+        }
+
+        private async void WriteMessageToAllClients(IMessage message)
+        {
+            var connections = ClientConnections.TakeCopy();
+
+            foreach(var client in connections)
+            {
+                await Write(client, message);
+            }
+        }
+
+        private async Task Write(IClientConnection clientConnection, IMessage message)
+        {
+                try
+                {
+                    await _networkDataService.WriteAndEncodeMessageWithHeader(message, clientConnection.Stream);
+                }
+                catch(Exception e)
+                {
+                    System.Console.WriteLine("client with id " + clientConnection.UserId + " Disconnected.");
+                    clientConnection.Stream.Close();
+                    ClientConnections.Remove(clientConnection);
+                }
+        }
+
+        private async Task ProcessMessage(IMessage message)
+        {
+            switch (message.MessageType)
+            {
+                case MessageType.Chat:
+                    var newMsg = message as ChatMessage;
+                    System.Console.WriteLine("Chat message read.");
+                    await WriteMessageToClient(newMsg.UserToId, newMsg);
+                    break;
+            }
         }
     }
 }

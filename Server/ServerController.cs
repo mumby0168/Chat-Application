@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Server.Args;
 using Server.Controllers;
 using Server.Controllers.Interfaces;
+using IConnectionController = Server.Controllers.Interfaces.IConnectionController;
 
 namespace Server
 {
@@ -25,6 +26,8 @@ namespace Server
             tcpListener = new TcpListener(IPAddress.Parse("172.20.10.10"), 2500);
             tcpListener.Start();
 
+            _connectionController.BeginReadingFromClients();
+
             Task.Run(() => {
                 while(true)
                 {
@@ -39,14 +42,17 @@ namespace Server
 
         private async void NewConnectionCallback(IAsyncResult asyncResult)
         {
-            var listener = (TcpListener)asyncResult;
+            System.Console.WriteLine("Call back");
+            var listener = (TcpListener)asyncResult.AsyncState;
 
             var newClient = listener.EndAcceptTcpClient(asyncResult);
 
             var result = await _connectionController.TryAddUser(newClient);
 
-            if(!result)
+            if(!result){
                 newClient.Close();
+                System.Console.WriteLine("Closing Connecition");
+            }
         }
     }
 }
