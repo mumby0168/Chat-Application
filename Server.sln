@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{ED9A7553-956C-429C-B835-6766138DF409}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{ED9A7553-956C-429C-B835-6766138DF409}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database.Dummy", "Database.Dummy\Database.Dummy.csproj", "{48CD2FF0-50B2-43DE-98D2-D218FF8F7606}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sockets.DataStructures", "Sockets.DataStructures\Sockets.DataStructures.csproj", "{952A46FB-C595-4D88-8B29-5AA9F21BDC4B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "User.System.Core", "User.System.Core\User.System.Core.csproj", "{CC401D8B-F2D5-476E-8544-9AFFE08135CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServerApp", "TestServerApp\TestServerApp.csproj", "{F0676445-316B-4955-B89C-F24CAECCB2CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{CC401D8B-F2D5-476E-8544-9AFFE08135CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC401D8B-F2D5-476E-8544-9AFFE08135CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC401D8B-F2D5-476E-8544-9AFFE08135CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0676445-316B-4955-B89C-F24CAECCB2CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0676445-316B-4955-B89C-F24CAECCB2CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0676445-316B-4955-B89C-F24CAECCB2CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0676445-316B-4955-B89C-F24CAECCB2CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

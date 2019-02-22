@@ -17,7 +17,7 @@ namespace Server
             _unityContainer = new UnityContainer();
             Setup();
         }
-
+           
         public static IServerController GetController() => _unityContainer.Resolve<IServerController>();
 
         private static void Setup()
