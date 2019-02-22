@@ -27,6 +27,7 @@ namespace Sockets.DataStructures.Messages
             bytes.AddRange(BitConverter.GetBytes(FromId));
             bytes.AddRange(BitConverter.GetBytes(ToId));
             bytes.AddRange(ImageData);
+            return bytes;
         }
 
         public static ImageMessage Decode(byte[] encodedData)

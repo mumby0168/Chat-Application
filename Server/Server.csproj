@@ -9,4 +9,8 @@
     <ProjectReference Include="..\Sockets.DataStructures\Sockets.DataStructures.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Unity.NetCore" Version="4.0.3" />
+  </ItemGroup>
+
 </Project>

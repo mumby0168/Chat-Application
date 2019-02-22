@@ -18,7 +18,6 @@ namespace Sockets.DataStructures.MockViewModels
                             break;
                         case MessageType.Connect:
                             break;
-                            break;
                         case MessageType.Chat:
                             ChatMessage = (ChatMessage) args.Message;
                             break;
