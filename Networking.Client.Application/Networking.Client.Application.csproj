@@ -173,18 +173,25 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\ByteArrayToBitMapConverter.cs" />
+    <Compile Include="EventArgs\MessageReceivedEventArgs.cs" />
     <Compile Include="Events\UserLoginEvent.cs" />
+    <Compile Include="Network\Interfaces\INetworkConnectionController.cs" />
+    <Compile Include="Network\NetworkConnectionController.cs" />
     <Compile Include="Services\Concrete\FileProcessorService.cs" />
     <Compile Include="Services\IFileProcessorService.cs" />
     <Compile Include="ViewModels\ChatRoomViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\UsersListViewModel.cs" />
     <Compile Include="Views\ChatRoomView.xaml.cs">
       <DependentUpon>ChatRoomView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RegisterView.xaml.cs">
       <DependentUpon>RegisterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UsersListView.xaml.cs">
+      <DependentUpon>UsersListView.xaml</DependentUpon>
     </Compile>
     <Page Include="Views\ChatRoomView.xaml">
       <SubType>Designer</SubType>
@@ -210,6 +217,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\RegisterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UsersListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -243,13 +254,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\User.System.Core\User.System.Core.csproj">
-      <Project>{E1CA4ECC-2605-4FF9-83E9-38144D9AFB4D}</Project>
-      <Name>User.System.Core</Name>
-    </ProjectReference>
+    <None Include="Resources\blank-profile.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\blank-profile.png" />
+    <ProjectReference Include="..\Sockets.DataStructures\Sockets.DataStructures.csproj">
+      <Project>{952a46fb-c595-4d88-8b29-5aa9f21bdc4b}</Project>
+      <Name>Sockets.DataStructures</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\User.System.Core\User.System.Core.csproj">
+      <Project>{cc401d8b-f2d5-476e-8544-9affe08135cb}</Project>
+      <Name>User.System.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -19,8 +19,63 @@
 
         <TextBlock Text="Welcome to Chat Center Inc." Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40"></TextBlock>
 
+
+        <Grid Name="SpinnerParent" Grid.Row="1" Margin="50,0,50,0">
+            <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="{Binding ElementName=SpinnerParent, Path=ActualHeight}">
+                <materialDesign:Card.Style>
+                    <Style TargetType="materialDesign:Card">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLoading, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                <Setter Property="Visibility" Value="Hidden"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsLoading, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </materialDesign:Card.Style>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="1">
+                        
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Checking your credentials." FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Bottom"></TextBlock>
+                            
+                        <ProgressBar
+                            Grid.Row="1"
+                            IsIndeterminate="True"                   
+                            VerticalAlignment="Center"/>
+
+                    </Grid>
+                </Grid>
+                
+                
+            </materialDesign:Card>
+        </Grid>
+
         <Grid Name="Parent" Grid.Row="1" Margin="50,0,50,0">
-            <materialDesign:Card  materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="{Binding ElementName=Parent, Path=ActualHeight}">
+            <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="{Binding ElementName=Parent, Path=ActualHeight}">
+                <materialDesign:Card.Style>
+                    <Style TargetType="materialDesign:Card">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLoading, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                <Setter Property="Visibility" Value="Hidden"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsLoading, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </materialDesign:Card.Style>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -60,19 +115,15 @@
             </materialDesign:Card>
         </Grid>
 
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="2*"/>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
                 <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
             <Button Command="{Binding Path=RegisterCommand}"  Content="Create Account" Grid.Column="1"  VerticalAlignment="Center" Margin="5"></Button>
             <Button Command="{Binding Path=LoginCommand}" Content="Login" Grid.Column="2" VerticalAlignment="Center" Margin="5" ></Button>
         </Grid>
-
-        
-
-
     </Grid>
 </UserControl>

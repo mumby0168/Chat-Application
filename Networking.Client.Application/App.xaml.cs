@@ -9,6 +9,8 @@ using System.Windows;
 using System.Windows.Navigation;
 using CommonServiceLocator;
 using Networking.Client.Application.Config;
+using Networking.Client.Application.Network;
+using Networking.Client.Application.Network.Interfaces;
 using Networking.Client.Application.Services;
 using Networking.Client.Application.Services.Concrete;
 using Networking.Client.Application.ViewModels;
@@ -16,6 +18,8 @@ using Networking.Client.Application.Views;
 using Prism.Ioc;
 using Prism.Regions;
 using Prism.Unity;
+using Sockets.DataStructures.Services;
+using Sockets.DataStructures.Services.Interfaces;
 using User.System.Core.Services;
 using User.System.Core.Services.Interfaces;
 
@@ -29,6 +33,7 @@ namespace Networking.Client.Application
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             var classes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Name.EndsWith("View"));
+
             foreach (var @class in classes)
             {
                 containerRegistry.RegisterForNavigation(@class, @class.Name);
@@ -36,6 +41,8 @@ namespace Networking.Client.Application
 
             containerRegistry.Register<IPasswordProtectionService, PasswordProtectionService>();
             containerRegistry.Register<IFileProcessorService, FileProcessorService>();
+            containerRegistry.RegisterSingleton<INetworkConnectionController, NetworkConnectionController>();
+            containerRegistry.Register<INetworkDataService, NetworkDataService>();
         }
     
 
