@@ -6,7 +6,7 @@ namespace Server.Extensions
     {
         public static void RegisterSingleton<I, C>(this IUnityContainer unityContainer)
         {
-            unityContainer.RegisterType(typeof(I), typeof(C), typeof(I).Name, new ContainerControlledLifetimeManager());
+            unityContainer.RegisterType(typeof(I), typeof(C), null, new ContainerControlledLifetimeManager());
         }
     }
 }

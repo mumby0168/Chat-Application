@@ -12,5 +12,7 @@ namespace Server.Controllers.Interfaces
         Task<bool> TryAddUser(TcpClient newClient);
 
         List<IClientConnection> ClientConnections { get; }
+
+        void BeginReadingFromClients();
     }
 }

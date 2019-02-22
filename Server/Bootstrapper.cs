@@ -9,21 +9,19 @@ using Sockets.DataStructures.Services.Interfaces;
 
 namespace Server
 {
-    public class Bootstrapper
+    public static class Bootstrapper
     {
         private static IUnityContainer _unityContainer;
-        public Bootstrapper()
-        {
-            _unityContainer = new UnityContainer();
-            Setup();
-        }
+        
 
         public static IServerController GetController() => _unityContainer.Resolve<IServerController>();
 
-        private static void Setup()
+        public static void Setup()
         {
+            _unityContainer = new UnityContainer();
+            
             _unityContainer.RegisterSingleton<IServerController, ServerController>();
-            _unityContainer.RegisterSingleton<IConnectionController, ConnectionController>();
+            _unityContainer.RegisterSingleton<Controllers.Interfaces.IConnectionController, ConnectionController>();
 
             _unityContainer.RegisterType<INetworkDataService, NetworkDataService>();
 
