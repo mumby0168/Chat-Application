@@ -20,10 +20,6 @@ namespace TestServerApp
         {
             var client1Id = await SetupClient();
 
-            Thread.Sleep(2000);
-
-            var client2Id = await SetupClient();
-
             int i = 0;
 
             do
@@ -53,7 +49,7 @@ namespace TestServerApp
         {
             var client = new TcpClient();
 
-            client.Connect(new IPEndPoint(IPAddress.Parse("172.20.10.10"), 2500));
+            client.Connect(new IPEndPoint(IPAddress.Parse("192.168.1.97"), 2500));
 
             var random = new Random();
 
@@ -61,7 +57,7 @@ namespace TestServerApp
 
             var msg = new ConnectRequestMessage()
             {
-                UserId = (ushort)random.Next(1, 20),
+                UserId = 6,
                 ChatEnterMessage = "Hello"
             };
 

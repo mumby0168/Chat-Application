@@ -42,6 +42,8 @@ namespace Networking.Client.Application
             containerRegistry.Register<IPasswordProtectionService, PasswordProtectionService>();
             containerRegistry.Register<IFileProcessorService, FileProcessorService>();
             containerRegistry.RegisterSingleton<INetworkConnectionController, NetworkConnectionController>();
+            containerRegistry.RegisterSingleton<ICurrentUser, CurrentUser>();
+            containerRegistry.RegisterSingleton<IChatManager, ChatManager>();
             containerRegistry.Register<INetworkDataService, NetworkDataService>();
         }
     

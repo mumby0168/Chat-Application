@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 using System.Text;
 using User.System.Core.Annotations;
@@ -59,6 +60,20 @@ namespace User.System.Core.Model
         public byte[] Salt { get; set; }
 
         public byte[] Password { get; set; }
+
+        private bool _isMessageUnRead;
+
+        [NotMapped]
+        public bool IsMessageUnRead
+        {
+            get { return _isMessageUnRead; }
+            set
+            {
+                _isMessageUnRead = value; 
+                OnPropertyChanged();
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

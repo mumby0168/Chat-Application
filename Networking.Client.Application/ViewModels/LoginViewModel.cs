@@ -129,7 +129,7 @@ namespace Networking.Client.Application.ViewModels
             {
                 //navigate to new view.                
 
-                _networkConnectionController.Connect(new IPEndPoint(IPAddress.Parse("172.20.10.10"), 2500), user.Id,
+                _networkConnectionController.Connect(new IPEndPoint(IPAddress.Parse("192.168.1.97"), 2500), user.Id,
                     () => { _networkConnectionController.BeginListeningForMessages(); },
                     () => { MessageBox.Show("Failed Connecting to the server."); });                
 

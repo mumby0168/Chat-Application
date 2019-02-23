@@ -45,6 +45,10 @@
             </ContentControl>
         </Grid>
 
+        <Grid Grid.Column="1" Grid.Row="1">
+            <local:ChatView></local:ChatView>
+        </Grid>
+
     </Grid>
 
    

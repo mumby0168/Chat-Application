@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Networking.Client.Application.EventArgs;
 using Networking.Client.Application.Network.Interfaces;
+using Networking.Client.Application.Services;
+using Sockets.DataStructures.Base;
 using Sockets.DataStructures.Messages;
 using Sockets.DataStructures.Services.Interfaces;
 
@@ -16,21 +18,21 @@ namespace Networking.Client.Application.Network
     public class NetworkConnectionController : INetworkConnectionController
     {
         private readonly INetworkDataService _networkDataService;
+        private readonly ICurrentUser _currentUser;
         private Action _connectionFailedCallback;
         private Action _connectionSuccseful;
 
-        public NetworkConnectionController(INetworkDataService networkDataService)
+        public NetworkConnectionController(INetworkDataService networkDataService, ICurrentUser currentUser)
         {
-            _networkDataService = networkDataService;            
-        }
-        private int _userId;
-        private NetworkStream _stream;
+            _networkDataService = networkDataService;
+            _currentUser = currentUser;
+        }        
 
         public void Connect(IPEndPoint ipEndPoint, int userId, Action connectedCallback, Action failedConnectionCallback)
         {
             _connectionFailedCallback = failedConnectionCallback;
             _connectionSuccseful = connectedCallback;
-            _userId = userId;
+            _currentUser.Id = userId;
             var tcpClient = new TcpClient();
             tcpClient.BeginConnect(ipEndPoint.Address, ipEndPoint.Port, ConnectionBegunCallback, tcpClient);
         }
@@ -39,7 +41,7 @@ namespace Networking.Client.Application.Network
 
         public void BeginListeningForMessages()
         {
-            if (_stream == null)
+            if (_currentUser.NetworkStream == null)
                 throw new InvalidOperationException("Connect() must be called prior to reading messages.");
 
 
@@ -47,25 +49,30 @@ namespace Networking.Client.Application.Network
             {
                 while (true)
                 {
-                    if (_stream.DataAvailable)
+                    if (_currentUser.NetworkStream.DataAvailable)
                     {
                         Debug.WriteLine("Data being read.");
                         try
                         {
-                            var header = await _networkDataService.ReadAndDecodeHeader(_stream);
+                            var header = await _networkDataService.ReadAndDecodeHeader(_currentUser.NetworkStream);
 
-                            var message = await _networkDataService.ReadAndDecodeMessage(header, _stream);
+                            var message = await _networkDataService.ReadAndDecodeMessage(header, _currentUser.NetworkStream);
 
                             MessageReceivedEventHandler.Invoke(this, new MessageReceivedEventArgs{Message = message, TimeStamp = header.TimeStamp});
                         }
                         catch (Exception e)
                         {
-                            throw;
+                            throw e;
                         }
                     }
                 }
             });
-        }      
+        }
+
+        public async Task SendMessage(IMessage message)
+        {
+           await _networkDataService.WriteAndEncodeMessageWithHeader(message, _currentUser.NetworkStream);
+        }
 
 
         private async void ConnectionBegunCallback(IAsyncResult asyncResult)
@@ -76,17 +83,17 @@ namespace Networking.Client.Application.Network
 
                 client.EndConnect(asyncResult);
 
-                _stream = client.GetStream();
+                _currentUser.NetworkStream = client.GetStream();
 
-                if (_stream == null)
+                if (_currentUser.NetworkStream == null)
                 {
                     _connectionFailedCallback.Invoke();
                     return;
                 }
 
-                var msg = new ConnectRequestMessage {ChatEnterMessage = "Hello", UserId = (ushort) _userId};
+                var msg = new ConnectRequestMessage {ChatEnterMessage = "Hello", UserId = (ushort)_currentUser.Id};
 
-                await _networkDataService.WriteAndEncodeMessageWithHeader(msg, _stream);
+                await _networkDataService.WriteAndEncodeMessageWithHeader(msg, _currentUser.NetworkStream);
 
                 _connectionSuccseful.Invoke();
             }

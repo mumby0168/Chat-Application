@@ -1,10 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Networking.Client.Application.EventArgs;
+using Networking.Client.Application.Events;
+using Networking.Client.Application.Models;
 using Networking.Client.Application.Network.Interfaces;
+using Prism.Events;
 using Prism.Mvvm;
 using Sockets.DataStructures.Base;
 using Sockets.DataStructures.Messages;
@@ -17,14 +21,19 @@ namespace Networking.Client.Application.ViewModels
     public class UsersListViewModel : BindableBase
     {
         private readonly INetworkConnectionController _networkConnectionController;
-        
+        private readonly IEventAggregator _eventAggregator;
+        private readonly IChatManager _chatManager;
+
         private List<SocketUser> _users = new List<SocketUser>();
         private ObservableCollection<SocketUser> _socketUsers;
 
-        public UsersListViewModel(INetworkConnectionController networkConnectionController)
+        public UsersListViewModel(INetworkConnectionController networkConnectionController, IEventAggregator eventAggregator, IChatManager chatManager)
         {            
             _networkConnectionController = networkConnectionController;
-            _networkConnectionController.MessageReceivedEventHandler += NewMessageFromServer;                   
+            _eventAggregator = eventAggregator;
+            _chatManager = chatManager;
+            _networkConnectionController.MessageReceivedEventHandler += NewMessageFromServer;      
+            SelectedSocketUser = new SocketUser();
         }
 
         public ObservableCollection<SocketUser> SocketUsers
@@ -37,6 +46,20 @@ namespace Networking.Client.Application.ViewModels
             }
         }
 
+        private SocketUser _selectedSocketUser;
+
+        public SocketUser SelectedSocketUser
+        {
+            get { return _selectedSocketUser; }
+            set
+            {
+                value.IsMessageUnRead = false;
+                _selectedSocketUser = value;
+                UserSelected();
+            }
+        }
+
+
         public async void NewMessageFromServer(object sender, MessageReceivedEventArgs args)
         {            
             switch (args.Message.MessageType)
@@ -44,6 +67,9 @@ namespace Networking.Client.Application.ViewModels
                 case MessageType.NewUserOnline:
                     await NewUserOnline(args.Message as NewUserOnlineMessage);
                     break;
+                case MessageType.Chat:
+                    NewChat(((ChatMessage)args.Message).UserFromId);
+                    break;                                      
             }
         }
 
@@ -57,12 +83,30 @@ namespace Networking.Client.Application.ViewModels
                     System.Windows.Application.Current.Dispatcher.Invoke(() =>
                    {                                           
                         _users.Add(user);
-                        SocketUsers = new ObservableCollection<SocketUser>(_users);
-                        MessageBox.Show(user.Email);
+                        SocketUsers = new ObservableCollection<SocketUser>(_users);                        
                    });
+
+                    if (!_chatManager.Chats.ContainsKey(user))
+                    {
+                        Debug.WriteLine("new chat user added to dictionary.");
+                        _chatManager.Chats.Add(user, new List<ChatMessageModel>());
+                    }
                 }
                     
             }
+        }
+
+        private void NewChat(int userFromId)
+        {
+            if(SelectedSocketUser.Id == userFromId) return;
+
+            var user = SocketUsers.FirstOrDefault(s => s.Id == userFromId);
+            if (user != null) user.IsMessageUnRead = true;            
+        }
+
+        private void UserSelected()
+        {
+            _eventAggregator.GetEvent<UserSelected>().Publish(SelectedSocketUser.Id);            
         }
 
     }

@@ -3,7 +3,9 @@
                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                             xmlns:local="clr-namespace:Networking.Client.Application"
                             xmlns:converters="clr-namespace:Networking.Client.Application.Converters"
-                            xmlns:prism="http://prismlibrary.com/">
+                            xmlns:prism="http://prismlibrary.com/"
+                            xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                            xmlns:model="clr-namespace:User.System.Core.Model;assembly=User.System.Core">
     <prism:PrismApplication.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -12,8 +14,60 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
             <converters:ByteArrayToBitMapConverter x:Key="ByteArrayToBitMapConverter" ></converters:ByteArrayToBitMapConverter>
             <converters:ByteArrayToStreamSource x:Key="ByteArrayToStreamSource" ></converters:ByteArrayToStreamSource>
+
+            <Style x:Key="FullWidthItem" TargetType="ListBoxItem">
+                <Setter Property="Width" Value="Auto"></Setter>
+            </Style>
+
+            <!--User view data template-->
+            <DataTemplate x:Key="UserListItemTemplate" DataType="model:SocketUser">
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Value="True" Binding="{Binding Path=IsMessageUnRead}">
+                                    <Setter Property="Opacity" Value="0.5"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Image Grid.Column="0" Source="{Binding ProfilePicture, Converter={StaticResource ByteArrayToBitMapConverter}}"></Image>
+
+                    <TextBlock Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
+
+                    <TextBlock Text="{Binding Email}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left">
+                    </TextBlock>
+
+                    <materialDesign:PackIcon Grid.Row="0" Grid.RowSpan="2" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Kind="Message">
+                        <materialDesign:PackIcon.Style>
+                            <Style TargetType="materialDesign:PackIcon">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMessageUnRead}" Value="False">
+                                        <Setter Value="Hidden" Property="Visibility" ></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </materialDesign:PackIcon.Style>
+                    </materialDesign:PackIcon>
+
+                </Grid>
+            </DataTemplate>
+
+
         </ResourceDictionary>
     </prism:PrismApplication.Resources>
 </prism:PrismApplication>
