@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Networking.Client.Application.Events;
+using Networking.Client.Application.Network.Interfaces;
 using Prism.Events;
 using Prism.Mvvm;
 using User.System.Core.Model;
@@ -13,11 +14,13 @@ namespace Networking.Client.Application.ViewModels
     public class ChatRoomViewModel : BindableBase
     {
         private readonly IEventAggregator _eventAggregator;
+        private readonly INetworkConnectionController _networkConnectionController;
 
-        public ChatRoomViewModel(IEventAggregator eventAggregator)
+        public ChatRoomViewModel(IEventAggregator eventAggregator, INetworkConnectionController networkConnectionController)
         {
             _eventAggregator = eventAggregator;
-            _eventAggregator.GetEvent<UserLoginEvent>().Subscribe(UserLogin);
+            _networkConnectionController = networkConnectionController;
+            _eventAggregator.GetEvent<UserLoginEvent>().Subscribe(UserLogin);                     
         }
 
         #region Properties
