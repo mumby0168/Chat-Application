@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+using System.Xml.Linq;
 using System.IO;
 using System.Linq;
 using System;
@@ -51,13 +53,42 @@ namespace Server.Controllers
 
                 WriteMessageToAllClients(newMsg);
 
-                ClientConnections.Add(new ClientConnection(connectRequestMessage.UserId, stream));
+                var connection = new ClientConnection(connectRequestMessage.UserId, stream);
+
+                await NotifyNewUserOfOtherConnections(connection);
+
+                ClientConnections.Add(connection);
 
                 System.Console.WriteLine("Client joined with ID: " + connectRequestMessage.UserId);
 
                 return true;
             }
             return false;
+        }
+
+        private async Task NotifyNewUserOfOtherConnections(IClientConnection connection)
+        {
+            await Task.Run(async () => {
+
+                var connections = ClientConnections.TakeCopy();
+
+                foreach(var conn in connections)
+                {
+                    Console.WriteLine("notfying new user: " + connection.UserId + " about existing user: " + conn.UserId);
+                    var msg = new NewUserOnlineMessage{UserId = (ushort)conn.UserId};
+                    await _networkDataService.WriteAndEncodeMessageWithHeader(msg, connection.Stream);
+                }
+            });
+        }
+
+        private void UserDisconnected(ushort userId)
+        {
+            var message = new UserOfflineMessage();
+            message.UsersId = userId;
+
+            RemoveUser(userId);
+
+            WriteMessageToAllClients(message);
         }
 
         public void BeginReadingFromClients()
@@ -80,9 +111,9 @@ namespace Server.Controllers
                                 await ProcessMessage(message);
                             }
                         }
-                        catch (System.Exception)
+                        catch (System.Exception e)
                         {
-                            
+                            Console.WriteLine("Begin reading exception: " + e.Message);
                         }
                     }
                 }
@@ -116,6 +147,7 @@ namespace Server.Controllers
                 }
                 catch(Exception e)
                 {
+                    System.Console.WriteLine("Exception thrown in Write() " + e.Message);
                     System.Console.WriteLine("client with id " + clientConnection.UserId + " Disconnected.");
                     clientConnection.Stream.Close();
                     ClientConnections.Remove(clientConnection);
@@ -131,7 +163,26 @@ namespace Server.Controllers
                     System.Console.WriteLine("Chat message read.");
                     await WriteMessageToClient(newMsg.UserToId, newMsg);
                     break;
+                case MessageType.UserLogoff:
+                    var msg = message as UserLogoffMessage;
+                    RemoveUser(msg.UsersId);
+                    WriteMessageToAllClients(new UserOfflineMessage{UsersId = msg.UsersId});
+                    break;
             }
+        }
+
+        private void RemoveUser(ushort userId)
+        {
+                    var connection = ClientConnections.FirstOrDefault(c => c.UserId == userId);
+
+                    if(connection == null)
+                    {
+                        Console.WriteLine("Users being removed was not found in the connections list.")
+                        return;
+                    }
+
+                    connection.Stream.Close();
+                    ClientConnections.Remove(connection);
         }
     }
 }
