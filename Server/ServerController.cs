@@ -6,6 +6,8 @@ using Server.Args;
 using Server.Controllers;
 using Server.Controllers.Interfaces;
 using IConnectionController = Server.Controllers.Interfaces.IConnectionController;
+using Server.Extensions;
+using Sockets.DataStructures.Messages;
 
 namespace Server
 {
@@ -16,14 +18,14 @@ namespace Server
         public ServerController(IConnectionController connectionController)
         {
             this._connectionController = connectionController;
-        }
+        } 
 
         public EventHandler<NewClientEventArgs> UserConnected { get; set; }
 
         public void Begin()
         {
             TcpListener tcpListener;
-            tcpListener = new TcpListener(IPAddress.Parse("172.20.10.10"), 2500);
+            tcpListener = new TcpListener(IPAddress.Parse("192.168.1.97"), 2500);
             tcpListener.Start();
 
             _connectionController.BeginReadingFromClients();
@@ -42,10 +44,11 @@ namespace Server
 
         private async void NewConnectionCallback(IAsyncResult asyncResult)
         {
-            System.Console.WriteLine("Call back");
+           
             var listener = (TcpListener)asyncResult.AsyncState;
 
             var newClient = listener.EndAcceptTcpClient(asyncResult);
+            System.Console.WriteLine("Completed ending of connectio.");
 
             var result = await _connectionController.TryAddUser(newClient);
 

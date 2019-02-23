@@ -51,13 +51,32 @@ namespace Server.Controllers
 
                 WriteMessageToAllClients(newMsg);
 
-                ClientConnections.Add(new ClientConnection(connectRequestMessage.UserId, stream));
+                var connection = new ClientConnection(connectRequestMessage.UserId, stream);
+
+                await NotifyNewUserOfOtherConnections(connection);
+
+                ClientConnections.Add(connection);
 
                 System.Console.WriteLine("Client joined with ID: " + connectRequestMessage.UserId);
 
                 return true;
             }
             return false;
+        }
+
+        private async Task NotifyNewUserOfOtherConnections(IClientConnection connection)
+        {
+            await Task.Run(async () => {
+
+                var connections = ClientConnections.TakeCopy();
+
+                foreach(var conn in connections)
+                {
+                    Console.WriteLine("notfying new user: " + connection.UserId + " about existing user: " + conn.UserId);
+                    var msg = new NewUserOnlineMessage{UserId = (ushort)conn.UserId};
+                    await _networkDataService.WriteAndEncodeMessageWithHeader(msg, connection.Stream);
+                }
+            });
         }
 
         public void BeginReadingFromClients()
@@ -80,9 +99,9 @@ namespace Server.Controllers
                                 await ProcessMessage(message);
                             }
                         }
-                        catch (System.Exception)
+                        catch (System.Exception e)
                         {
-                            
+                            Console.WriteLine("Begin reading exception: " + e.Message);
                         }
                     }
                 }
@@ -116,6 +135,7 @@ namespace Server.Controllers
                 }
                 catch(Exception e)
                 {
+                    System.Console.WriteLine("Exception thrown in Write() " + e.Message);
                     System.Console.WriteLine("client with id " + clientConnection.UserId + " Disconnected.");
                     clientConnection.Stream.Close();
                     ClientConnections.Remove(clientConnection);
