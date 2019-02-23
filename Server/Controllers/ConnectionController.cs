@@ -177,7 +177,7 @@ namespace Server.Controllers
 
                     if(connection == null)
                     {
-                        Console.WriteLine("Users being removed was not found in the connections list.")
+                        Console.WriteLine("Users being removed was not found in the connections list.");
                         return;
                     }
 
