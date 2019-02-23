@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+using System.Xml.Linq;
 using System.IO;
 using System.Linq;
 using System;
@@ -79,6 +81,16 @@ namespace Server.Controllers
             });
         }
 
+        private void UserDisconnected(ushort userId)
+        {
+            var message = new UserOfflineMessage();
+            message.UsersId = userId;
+
+            RemoveUser(userId);
+
+            WriteMessageToAllClients(message);
+        }
+
         public void BeginReadingFromClients()
         {
             Task.Run(async () => {
@@ -151,7 +163,26 @@ namespace Server.Controllers
                     System.Console.WriteLine("Chat message read.");
                     await WriteMessageToClient(newMsg.UserToId, newMsg);
                     break;
+                case MessageType.UserLogoff:
+                    var msg = message as UserLogoffMessage;
+                    RemoveUser(msg.UsersId);
+                    WriteMessageToAllClients(new UserOfflineMessage{UsersId = msg.UsersId});
+                    break;
             }
+        }
+
+        private void RemoveUser(ushort userId)
+        {
+                    var connection = ClientConnections.FirstOrDefault(c => c.UserId == userId);
+
+                    if(connection == null)
+                    {
+                        Console.WriteLine("Users being removed was not found in the connections list.")
+                        return;
+                    }
+
+                    connection.Stream.Close();
+                    ClientConnections.Remove(connection);
         }
     }
 }
