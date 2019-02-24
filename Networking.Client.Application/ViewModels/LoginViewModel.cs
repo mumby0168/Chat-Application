@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using Networking.Client.Application.Config;
 using Networking.Client.Application.Events;
 using Networking.Client.Application.Network.Interfaces;
+using Networking.Client.Application.Services;
 using Networking.Client.Application.Views;
 using Prism.Commands;
 using Prism.Events;
@@ -31,13 +32,15 @@ namespace Networking.Client.Application.ViewModels
         private readonly IPasswordProtectionService _passwordProtectionService;
         private readonly IEventAggregator _eventAggregator;
         private readonly INetworkConnectionController _networkConnectionController;
+        private readonly ICurrentUser _currentUser;
 
-        public LoginViewModel(IRegionManager regionManager, IPasswordProtectionService passwordProtectionService, IEventAggregator eventAggregator, INetworkConnectionController networkConnectionController)
+        public LoginViewModel(IRegionManager regionManager, IPasswordProtectionService passwordProtectionService, IEventAggregator eventAggregator, INetworkConnectionController networkConnectionController, ICurrentUser currentUser)
         {
             _regionManager = regionManager;
             _passwordProtectionService = passwordProtectionService;
             _eventAggregator = eventAggregator;
             _networkConnectionController = networkConnectionController;
+            _currentUser = currentUser;
             PasswordChangedCommand =new DelegateCommand<object>(PasswordChanged);
             LoginCommand = new DelegateCommand(Login);
             RegisterCommand = new DelegateCommand(Register);                 
@@ -129,10 +132,7 @@ namespace Networking.Client.Application.ViewModels
             {
                 //navigate to new view.                
 
-                _networkConnectionController.Connect(new IPEndPoint(IPAddress.Parse("192.168.1.97"), 2500), user.Id,
-                    () => { _networkConnectionController.BeginListeningForMessages(); },
-                    () => { MessageBox.Show("Failed Connecting to the server."); });                
-
+                _currentUser.Id = user.Id;
                 _regionManager.RequestNavigate(RegionNames.MainRegion, nameof(ChatRoomView));
                 _eventAggregator.GetEvent<UserLoginEvent>().Publish(user);
             }

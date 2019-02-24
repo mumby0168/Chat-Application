@@ -38,6 +38,12 @@ namespace Networking.Client.Application.ViewModels
                 Message = "Hello there",
                 TimeStamp = DateTime.Now
             });
+            ChatMessages.Add(new ChatMessageModel()
+            {
+                IsSent = true,
+                Message = "Hello mate",
+                TimeStamp = DateTime.Now
+            });
             SendMessageCommand = new DelegateCommand(async () => await SendMessage());
         }
 

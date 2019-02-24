@@ -174,13 +174,16 @@
     </ApplicationDefinition>
     <Compile Include="Converters\ByteArrayToBitMapConverter.cs" />
     <Compile Include="EventArgs\MessageReceivedEventArgs.cs" />
+    <Compile Include="Events\ChangeBaseColourEvent.cs" />
     <Compile Include="Events\UserLoginEvent.cs" />
     <Compile Include="Events\UserSelected.cs" />
     <Compile Include="Models\ChatMessageModel.cs" />
+    <Compile Include="Models\ServerModel.cs" />
     <Compile Include="Network\ChatManager.cs" />
     <Compile Include="Network\Interfaces\IChatManager.cs" />
     <Compile Include="Network\Interfaces\INetworkConnectionController.cs" />
     <Compile Include="Network\NetworkConnectionController.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Services\Concrete\CurrentUser.cs" />
     <Compile Include="Services\Concrete\FileProcessorService.cs" />
     <Compile Include="Services\ICurrentUser.cs" />

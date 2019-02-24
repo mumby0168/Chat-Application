@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
 using CommonServiceLocator;
+using MaterialDesignThemes.Wpf;
 using Networking.Client.Application.Config;
+using Networking.Client.Application.Events;
 using Networking.Client.Application.Network;
 using Networking.Client.Application.Network.Interfaces;
 using Networking.Client.Application.Services;
 using Networking.Client.Application.Services.Concrete;
 using Networking.Client.Application.ViewModels;
 using Networking.Client.Application.Views;
+using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;
 using Prism.Unity;
@@ -30,6 +33,8 @@ namespace Networking.Client.Application
     /// </summary>
     public partial class App : PrismApplication
     {
+
+        private PaletteHelper _paletteHelper = new PaletteHelper();        
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             var classes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Name.EndsWith("View"));
@@ -45,6 +50,13 @@ namespace Networking.Client.Application
             containerRegistry.RegisterSingleton<ICurrentUser, CurrentUser>();
             containerRegistry.RegisterSingleton<IChatManager, ChatManager>();
             containerRegistry.Register<INetworkDataService, NetworkDataService>();
+
+            
+
+            var events = Container.Resolve<IEventAggregator>();
+            events.GetEvent<ChangeBaseColourEvent>().Subscribe(ChangeBaseColor);
+
+            _paletteHelper.SetLightDark(true);            
         }
     
 
@@ -55,8 +67,13 @@ namespace Networking.Client.Application
 
 
         protected override Window CreateShell()
-        {
+        {            
             return ServiceLocator.Current.GetInstance<MainWindow>();
+        }
+
+        public void ChangeBaseColor(bool isDark)
+        {
+            _paletteHelper.SetLightDark(isDark);
         }
         
     }

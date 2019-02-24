@@ -5,10 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Networking.Client.Application.Views"
         mc:Ignorable="d"
-        xmlns:prism="http://prismlibrary.com/"
+        xmlns:prism="http://prismlibrary.com/"        
         xmlns:names="clr-namespace:Networking.Client.Application.Config"
         prism:ViewModelLocator.AutoWireViewModel="True"   
         xmlns:config="clr-namespace:Networking.Client.Application.Config"
+        Background="{StaticResource MaterialDesignPaper}"
+        FontFamily="{StaticResource MaterialDesignFont}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Title="MainWindow" Height="700" Width="1100">
 
     <Grid>

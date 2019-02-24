@@ -12,32 +12,55 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition Height="4*"/>
+                <RowDefinition MaxHeight="50"/>
+                <RowDefinition Height="7*"/>
             </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="0" Column="0" Name="ImageP">
-            <materialDesign:Card Padding="10" Name="CardP" Height="{Binding ElementName=ImageP, Path=ActualHeight}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Grid Grid.Column="0" >
-
+        <ToolBarTray  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Height="Auto">
+            <ToolBar  Style="{DynamicResource MaterialDesignToolBar}" ClipToBounds="False">
+                <materialDesign:Chip Content="{Binding User.Name}">
+                    <materialDesign:Chip.Icon>
                         <Image Source="{Binding Path=User.ProfilePicture, Converter={StaticResource ByteArrayToBitMapConverter}, UpdateSourceTrigger=PropertyChanged}"></Image>
-
-                    </Grid>
-
-                    <TextBlock Text="{Binding Path=User.Email}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"></TextBlock>
-                </Grid>
-            </materialDesign:Card>
-        </Grid>
+                    </materialDesign:Chip.Icon>
+                </materialDesign:Chip>
+                <Separator/>
+                <TextBlock FontSize="12" Text="Server Status:  " VerticalAlignment="Center"></TextBlock>
+                <TextBlock FontSize="12" VerticalAlignment="Center" Text="{Binding ServerModel.ServerStatus}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ServerModel.ServerStatus}" Value="Connected">
+                                    <Setter Property="Foreground" Value="GreenYellow"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ServerModel.ServerStatus}" Value="Failed">
+                                    <Setter Property="Foreground" Value="Red"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ServerModel.ServerStatus}" Value="Disconnected">
+                                    <Setter Property="Foreground" Value="Orange"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <Separator/>
+                <TextBox Text="{Binding ServerModel.IpAddress}" materialDesign:HintAssist.Hint="Server IP Address"></TextBox>
+                <TextBox Text="{Binding ServerModel.Port}" materialDesign:HintAssist.Hint="Server Port"></TextBox>
+                <Button Content="Connect" Command="{Binding ServerConnectCommand}"></Button>
+                <Separator/>
+                <StackPanel Orientation="Horizontal" Margin="8">
+                    <TextBlock VerticalAlignment="Center">Dark</TextBlock>
+                    <ToggleButton Margin="8 0 16 0" Command="{Binding ToggleBaseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" />
+                    <TextBlock VerticalAlignment="Center">Light</TextBlock>
+                </StackPanel>
+                <Separator/>
+                <Button Content="Logout"></Button>
+                <Separator/>
+            </ToolBar>
+        </ToolBarTray>
 
         <Grid Grid.Column="0" Grid.Row="1">
             <ContentControl prims:RegionManager.RegionName="UsersRegion">
