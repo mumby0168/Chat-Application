@@ -7,6 +7,7 @@
              mc:Ignorable="d"           
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/"
+             Background="{StaticResource MaterialDesignPaper}"
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
     <GroupBox Header="Chat Area" Margin="5">

@@ -32,8 +32,11 @@ namespace Networking.Client.Application.ViewModels
             _networkConnectionController = networkConnectionController;
             _eventAggregator = eventAggregator;
             _chatManager = chatManager;
-            _networkConnectionController.MessageReceivedEventHandler += NewMessageFromServer;      
+            _networkConnectionController.MessageReceivedEventHandler += NewMessageFromServer;
             SelectedSocketUser = new SocketUser();
+                SocketUsers = new ObservableCollection<SocketUser>();
+            SocketUsers.Add(new SocketUser(){Name = "Billy Mumby", Email = "billy.mumby@outlook.com"});
+            
         }
 
         public ObservableCollection<SocketUser> SocketUsers
