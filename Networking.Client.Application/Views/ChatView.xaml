@@ -20,6 +20,7 @@
             <ListView ItemsSource="{Binding ChatMessages, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
+                        <Setter Property="IsHitTestVisible" Value="False"></Setter>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsSent}" Value="True">
                                 <Setter Property="HorizontalAlignment" Value="Right"></Setter>
