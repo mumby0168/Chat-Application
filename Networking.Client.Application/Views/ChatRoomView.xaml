@@ -58,7 +58,7 @@
                     <TextBlock VerticalAlignment="Center">Light</TextBlock>
                 </StackPanel>
                 <Separator/>
-                <Button Content="Logout"></Button>
+                <Button Content="Logout" Command="{Binding LogoutCommand}"></Button>
                 <Separator/>
             </ToolBar>
         </ToolBarTray>

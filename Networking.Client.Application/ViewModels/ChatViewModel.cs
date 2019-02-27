@@ -32,19 +32,20 @@ namespace Networking.Client.Application.ViewModels
             _chatManager.NewMessageCallback(UpdateChat);
             SocketUser = new SocketUser();
             ChatMessages = new ObservableCollection<ChatMessageModel>();
-            ChatMessages.Add(new ChatMessageModel()
-            {
-                IsSent = false,
-                Message = "Hello there",
-                TimeStamp = DateTime.Now
-            });
-            ChatMessages.Add(new ChatMessageModel()
-            {
-                IsSent = true,
-                Message = "Hello mate",
-                TimeStamp = DateTime.Now
-            });
+            //ChatMessages.Add(new ChatMessageModel()
+            //{
+            //    IsSent = false,
+            //    Message = "Hello there",
+            //    TimeStamp = DateTime.Now
+            //});
+            //ChatMessages.Add(new ChatMessageModel()
+            //{
+            //    IsSent = true,
+            //    Message = "Hello mate",
+            //    TimeStamp = DateTime.Now
+            //});
             SendMessageCommand = new DelegateCommand(async () => await SendMessage());
+            _eventAggregator.GetEvent<LogoffEvent>().Subscribe(Logoff);
         }
 
 
@@ -118,6 +119,13 @@ namespace Networking.Client.Application.ViewModels
             {
                 UserSelected(socketUser.Id);
             }
+        }
+
+        private void Logoff()
+        {
+            SocketUser = new SocketUser();
+            ChatMessages = new ObservableCollection<ChatMessageModel>();
+            Message = "";
         }
     }
 }

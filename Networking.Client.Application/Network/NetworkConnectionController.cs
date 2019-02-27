@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Networking.Client.Application.EventArgs;
 using Networking.Client.Application.Network.Interfaces;
@@ -22,10 +23,15 @@ namespace Networking.Client.Application.Network
         private Action _connectionFailedCallback;
         private Action _connectionSuccseful;
 
+        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationToken _cancellationToken;
+
         public NetworkConnectionController(INetworkDataService networkDataService, ICurrentUser currentUser)
         {
             _networkDataService = networkDataService;
             _currentUser = currentUser;
+            _cancellationTokenSource = new CancellationTokenSource();
+            _cancellationToken = _cancellationTokenSource.Token;
         }        
 
         public void Connect(IPEndPoint ipEndPoint, int userId, Action connectedCallback, Action failedConnectionCallback)
@@ -39,6 +45,11 @@ namespace Networking.Client.Application.Network
 
         public EventHandler<MessageReceivedEventArgs> MessageReceivedEventHandler { get; set; }
 
+        public void Disconnect()
+        {
+            _cancellationTokenSource.Cancel();            
+        }
+
         public void BeginListeningForMessages()
         {
             if (_currentUser.NetworkStream == null)
@@ -47,7 +58,7 @@ namespace Networking.Client.Application.Network
 
             Task.Run(async () =>
             {
-                while (true)
+                while (!_cancellationToken.IsCancellationRequested)
                 {
                     if (_currentUser.NetworkStream.DataAvailable)
                     {
@@ -58,6 +69,8 @@ namespace Networking.Client.Application.Network
 
                             var message = await _networkDataService.ReadAndDecodeMessage(header, _currentUser.NetworkStream);
 
+                            if(message.MessageType == MessageType.UserOffline) Console.WriteLine("User Offline message recveid ......");
+
                             MessageReceivedEventHandler.Invoke(this, new MessageReceivedEventArgs{Message = message, TimeStamp = header.TimeStamp});
                         }
                         catch (Exception e)
@@ -66,7 +79,10 @@ namespace Networking.Client.Application.Network
                         }
                     }
                 }
-            });
+
+                _currentUser.NetworkStream.Close();
+
+            }, _cancellationToken);
         }
 
         public async Task SendMessage(IMessage message)

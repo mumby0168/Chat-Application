@@ -1,4 +1,5 @@
 ﻿using System;
+using Server.Controllers.Interfaces;
 using Sockets.DataStructures;
 
 namespace Server

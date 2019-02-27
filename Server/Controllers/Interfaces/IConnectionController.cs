@@ -8,11 +8,7 @@ using Server.Models;
 namespace Server.Controllers.Interfaces
 {
     public interface IConnectionController
-    {
-        Task<bool> TryAddUser(TcpClient newClient);
-
-        List<IClientConnection> ClientConnections { get; }
-
+    {        
         void BeginReadingFromClients();
     }
 }

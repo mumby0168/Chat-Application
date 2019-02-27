@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.EntityFrameworkCore.Query.ExpressionVisitors.Internal;
 using Networking.Client.Application.EventArgs;
 using Networking.Client.Application.Events;
 using Networking.Client.Application.Models;
@@ -36,7 +37,7 @@ namespace Networking.Client.Application.ViewModels
             SelectedSocketUser = new SocketUser();
                 SocketUsers = new ObservableCollection<SocketUser>();
             SocketUsers.Add(new SocketUser(){Name = "Billy Mumby", Email = "billy.mumby@outlook.com"});
-            
+            _eventAggregator.GetEvent<LogoffEvent>().Subscribe(Logoff);
         }
 
         public ObservableCollection<SocketUser> SocketUsers
@@ -72,8 +73,17 @@ namespace Networking.Client.Application.ViewModels
                     break;
                 case MessageType.Chat:
                     NewChat(((ChatMessage)args.Message).UserFromId);
-                    break;                                      
+                    break;
+                case MessageType.UserOffline:
+                    RemoveUserFromList((args.Message as UserOfflineMessage).UsersId);        
+                    break;                    
             }
+        }
+
+        private void RemoveUserFromList(int userId)
+        {
+            var user = SocketUsers.FirstOrDefault(s => s.Id == userId);
+            SocketUsers.Remove(user);
         }
 
         private async Task NewUserOnline(NewUserOnlineMessage newUserOnlineMessage)
@@ -110,6 +120,12 @@ namespace Networking.Client.Application.ViewModels
         private void UserSelected()
         {
             _eventAggregator.GetEvent<UserSelected>().Publish(SelectedSocketUser.Id);            
+        }
+
+        private void Logoff()
+        {
+            SocketUsers = new ObservableCollection<SocketUser>();
+            SelectedSocketUser = new SocketUser();
         }
 
     }

@@ -38,6 +38,9 @@ namespace Networking.Client.Application.Network
         {
             var userTo = Chats.FirstOrDefault(c => c.Key.Id == chatMessage.UserToId);
 
+            if(userTo.Value == null || userTo.Key == null)
+                return;
+
             userTo.Value.Add(new ChatMessageModel(){IsSent = true, Message = chatMessage.Message, TimeStamp = DateTime.Now});
 
             CallCallbacks(userTo.Key);
@@ -56,7 +59,17 @@ namespace Networking.Client.Application.Network
                 case MessageType.Chat:
                     ProcessChatMessage(args.Message as ChatMessage);
                     break;
+                case MessageType.UserOffline:
+                    ProcessUserOffline((UserOfflineMessage)args.Message);
+                    break;                    
             }
+        }
+
+        private void ProcessUserOffline(UserOfflineMessage message)
+        {
+            var chat = Chats.FirstOrDefault(c => c.Key.Id == message.UsersId);
+            Chats.Remove(chat.Key);
+            CallCallbacks(Chats.First().Key);
         }
 
         private void ProcessChatMessage(ChatMessage chatMessage)
@@ -78,7 +91,7 @@ namespace Networking.Client.Application.Network
 
             if (chat.Key == null) return;           
             CallCallbacks(chat.Key);
-        }
+        }        
 
         private void CallCallbacks(SocketUser socketUser)
         {

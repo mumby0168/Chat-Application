@@ -5,14 +5,19 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using MaterialDesignThemes.Wpf;
+using Networking.Client.Application.Config;
 using Networking.Client.Application.Events;
 using Networking.Client.Application.Models;
 using Networking.Client.Application.Network.Interfaces;
 using Networking.Client.Application.Services;
+using Networking.Client.Application.Views;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using Prism.Regions;
+using Sockets.DataStructures.Messages;
 using User.System.Core.Model;
 
 namespace Networking.Client.Application.ViewModels
@@ -22,12 +27,16 @@ namespace Networking.Client.Application.ViewModels
         private readonly IEventAggregator _eventAggregator;
         private readonly INetworkConnectionController _networkConnectionController;
         private readonly ICurrentUser _currentUser;
+        private readonly IChatManager _chatManager;
+        private readonly IRegionManager _regionManager;
 
-        public ChatRoomViewModel(IEventAggregator eventAggregator, INetworkConnectionController networkConnectionController, ICurrentUser currentUser)
+        public ChatRoomViewModel(IEventAggregator eventAggregator, INetworkConnectionController networkConnectionController, ICurrentUser currentUser, IChatManager chatManager, IRegionManager regionManager)
         {
             _eventAggregator = eventAggregator;
             _networkConnectionController = networkConnectionController;
             _currentUser = currentUser;
+            _chatManager = chatManager;
+            _regionManager = regionManager;
             _eventAggregator.GetEvent<UserLoginEvent>().Subscribe(UserLogin);        
 
             ServerModel = new ServerModel();
@@ -38,12 +47,16 @@ namespace Networking.Client.Application.ViewModels
             ServerConnectCommand = new DelegateCommand(Connect);
 
             ToggleBaseCommand = new DelegateCommand<object>(ToggleBaseColor);
+
+            LogoutCommand = new DelegateCommand(Logout);
         }
 
         //COMMANDS
         public DelegateCommand ServerConnectCommand { get; set; }
 
         public DelegateCommand<object> ToggleBaseCommand { get; set; }
+
+        public DelegateCommand LogoutCommand { get; set; }
 
         #region Properties
 
@@ -67,6 +80,15 @@ namespace Networking.Client.Application.ViewModels
         #endregion
 
         //COMMAND METHODS
+
+        public void Logout()
+        {
+            _networkConnectionController.SendMessage(new UserLogoffMessage {UsersId = (ushort) _currentUser.Id});
+            _chatManager.Chats = new Dictionary<SocketUser, List<ChatMessageModel>>();
+            _networkConnectionController.Disconnect();
+            ServerModel.ServerStatus = ServerStatus.Disconnected;
+            _regionManager.RequestNavigate(RegionNames.MainRegion, nameof(LoginView));            
+        }
 
         public void ToggleBaseColor(object value)
         {

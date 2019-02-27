@@ -175,6 +175,7 @@
     <Compile Include="Converters\ByteArrayToBitMapConverter.cs" />
     <Compile Include="EventArgs\MessageReceivedEventArgs.cs" />
     <Compile Include="Events\ChangeBaseColourEvent.cs" />
+    <Compile Include="Events\LogoffEvent.cs" />
     <Compile Include="Events\UserLoginEvent.cs" />
     <Compile Include="Events\UserSelected.cs" />
     <Compile Include="Models\ChatMessageModel.cs" />

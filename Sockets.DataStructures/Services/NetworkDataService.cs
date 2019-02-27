@@ -42,6 +42,11 @@ namespace Sockets.DataStructures.Services
                     return ChatMessage.Decode(dataBufferList);
                 case MessageType.NewUserOnline:
                     return NewUserOnlineMessage.Decode(dataBufferList);
+                case MessageType.UserLogoff:
+                    return UserLogoffMessage.Decode(dataBufferList);
+                case MessageType.UserOffline:
+                    return UserOfflineMessage.Decode(dataBufferList);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

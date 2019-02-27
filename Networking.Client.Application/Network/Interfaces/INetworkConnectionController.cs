@@ -16,6 +16,8 @@ namespace Networking.Client.Application.Network.Interfaces
         
         EventHandler<MessageReceivedEventArgs> MessageReceivedEventHandler { get; set; }
 
+        void Disconnect();
+
         void BeginListeningForMessages();
 
         Task SendMessage(IMessage message);
