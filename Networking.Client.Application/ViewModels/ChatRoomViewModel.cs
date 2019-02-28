@@ -40,6 +40,7 @@ namespace Networking.Client.Application.ViewModels
 
             _eventAggregator.GetEvent<UserLoginEvent>().Subscribe(UserLogin);
             _eventAggregator.GetEvent<OfflineUsersLoadedEvent>().Subscribe(() => IsConnectAllowed = true);
+            _eventAggregator.GetEvent<UserEditedEvent>().Subscribe((user) => User = user);
 
 
             ServerModel = new ServerModel();
@@ -142,6 +143,7 @@ namespace Networking.Client.Application.ViewModels
         public void CurrentUserClicked()
         {
             _regionManager.RequestNavigate(RegionNames.LeftPanel, nameof(EditProfileView));
+            _eventAggregator.GetEvent<EditUserEvent>().Publish(User);
         }
 
         #region Event Methods

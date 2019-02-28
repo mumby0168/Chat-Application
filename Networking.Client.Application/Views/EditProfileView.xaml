@@ -10,8 +10,53 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Name="Parent" Margin="5">
-        <md:Card Height="{Binding ElementName=Parent, UpdateSourceTrigger=PropertyChanged}">
-            
+        <md:Card Height="{Binding ElementName=Parent, Path=ActualHeight}">
+            <Grid Margin="10" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+
+                <Image Stretch="Uniform" Source="{Binding Path=SocketUser.ProfilePicture, Converter={StaticResource ByteArrayToBitMapConverter}}" Grid.Row="0" Grid.RowSpan="3"></Image>
+
+                <Button Command="{Binding SelectImageCommand}" Margin="-7" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Style="{StaticResource MaterialDesignFloatingActionMiniButton}">
+                    <md:PackIcon Kind="Pencil"></md:PackIcon>
+                </Button>
+
+
+                <TextBox Margin="0,10" Grid.Row="4" Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Display Name" Text="{Binding Path=SocketUser.Name}"></TextBox>
+
+                <Button Command="{Binding SaveCommand}" Grid.Row="6">
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Margin="5,0" Kind="File"></md:PackIcon>
+                        <TextBlock>Save</TextBlock>
+                    </StackPanel>
+                </Button>
+
+              
+            </Grid>
         </md:Card>
     </Grid>
 </UserControl>
+
+
+
+<!--<md:DrawerHost >
+                <Button
+                    Command="{x:Static md:DrawerHost.OpenDrawerCommand}"
+                    CommandParameter="{x:Static Dock.Left}"></Button>
+                    <md:DrawerHost.LeftDrawerContent>
+                    <Grid>
+                        <Label>Hello</Label>
+                    </Grid>
+                </md:DrawerHost.LeftDrawerContent>
+            </md:DrawerHost>-->

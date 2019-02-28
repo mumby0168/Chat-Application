@@ -96,15 +96,10 @@
                             BorderBrush="{DynamicResource MaterialDesignDivider}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition
-                                        SharedSizeGroup="Checkerz" />
+                                        <ColumnDefinition SharedSizeGroup="Checkerz" />
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
-                                    <ToggleButton
-                                    VerticalAlignment="Center"
-                                    IsEnabled="False"                                
-                                    Style="{StaticResource MaterialDesignActionLightToggleButton}"
-                                     >
+                                    <ToggleButton VerticalAlignment="Center" IsEnabled="False" Style="{StaticResource MaterialDesignActionLightToggleButton}">
                                         <Image Source="{Binding ProfilePicture, Converter={StaticResource ByteArrayToBitMapConverter}, UpdateSourceTrigger=PropertyChanged}"></Image>
                                     </ToggleButton>
                                     <StackPanel

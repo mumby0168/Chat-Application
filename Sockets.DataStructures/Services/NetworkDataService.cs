@@ -45,8 +45,9 @@ namespace Sockets.DataStructures.Services
                 case MessageType.UserLogoff:
                     return UserLogoffMessage.Decode(dataBufferList);
                 case MessageType.UserOffline:
-                    return UserOfflineMessage.Decode(dataBufferList);
-                    break;
+                    return UserOfflineMessage.Decode(dataBufferList);                    
+                case MessageType.Typing:
+                    return UserTypingMessage.Decode(dataBufferList);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

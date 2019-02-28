@@ -28,7 +28,7 @@ namespace Sockets.DataStructures.Base
         protected virtual ushort CalculateSizeMessageSize()
         {
             return (ushort) Encode().Count;
-        }
+        } 
 
         public virtual List<byte> GetMessageAndHeaderBytes()
         {

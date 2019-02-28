@@ -12,7 +12,8 @@ namespace Sockets.DataStructures.Base
         Image = 3,
         NewUserOnline = 4,
         UserOffline = 5,
-        UserLogoff = 6
+        UserLogoff = 6,
+        Typing = 7
     }
 
 }
