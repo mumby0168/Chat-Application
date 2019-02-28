@@ -10,8 +10,11 @@ using Networking.Client.Application.EventArgs;
 using Networking.Client.Application.Events;
 using Networking.Client.Application.Models;
 using Networking.Client.Application.Network.Interfaces;
+using Networking.Client.Application.Services;
+using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using Prism.Regions;
 using Sockets.DataStructures.Base;
 using Sockets.DataStructures.Messages;
 using User.System.Core;
@@ -25,21 +28,30 @@ namespace Networking.Client.Application.ViewModels
         private readonly INetworkConnectionController _networkConnectionController;
         private readonly IEventAggregator _eventAggregator;
         private readonly IChatManager _chatManager;
-        
+        private readonly ICurrentUser _currentUser;
+
         private ObservableCollection<SocketUser> _socketUsers;
 
-        public UsersListViewModel(INetworkConnectionController networkConnectionController, IEventAggregator eventAggregator, IChatManager chatManager)
+        public UsersListViewModel(INetworkConnectionController networkConnectionController, IEventAggregator eventAggregator, IChatManager chatManager, ICurrentUser currentUser)
         {            
             _networkConnectionController = networkConnectionController;
             _eventAggregator = eventAggregator;
             _chatManager = chatManager;
+            _currentUser = currentUser;
+
             _networkConnectionController.MessageReceivedEventHandler += NewMessageFromServer;
-            SelectedSocketUser = new SocketUser();
-            SocketUsers = new ObservableCollection<SocketUser>();            
             _eventAggregator.GetEvent<LogoffEvent>().Subscribe(Logoff);
+
+            SelectedSocketUser = new SocketUser();
+            OnlineSocketUsers = new ObservableCollection<SocketUser>();   
+            OfflineSocketUsers = new ObservableCollection<SocketUser>();
+
+            ViewLoadedCommand = new DelegateCommand(LoadView);
         }
 
-        public ObservableCollection<SocketUser> SocketUsers
+        public DelegateCommand ViewLoadedCommand { get; set; }        
+
+        public ObservableCollection<SocketUser> OnlineSocketUsers
         {
             get => _socketUsers;
             set
@@ -48,6 +60,19 @@ namespace Networking.Client.Application.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        private ObservableCollection<SocketUser> _offlineSocketUsers;
+
+        public ObservableCollection<SocketUser> OfflineSocketUsers
+        {
+            get { return _offlineSocketUsers; }
+            set
+            {
+                _offlineSocketUsers = value;
+                RaisePropertyChanged();
+            }
+        }
+            
 
         private SocketUser _selectedSocketUser;
 
@@ -65,6 +90,19 @@ namespace Networking.Client.Application.ViewModels
             }
         }
 
+        private bool _isLoading;
+
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+            set
+            {
+                _isLoading = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
 
         public async void NewMessageFromServer(object sender, MessageReceivedEventArgs args)
         {            
@@ -79,48 +117,52 @@ namespace Networking.Client.Application.ViewModels
                 case MessageType.UserOffline:
                     RemoveUserFromList((args.Message as UserOfflineMessage).UsersId);        
                     break;                    
-            }
+            }   
         }
 
         private void RemoveUserFromList(int userId)
         {
             Debug.WriteLine("Remove user with id: " + userId);
-            var user = SocketUsers.FirstOrDefault(s => s.Id == userId);            
+            var user = OnlineSocketUsers.FirstOrDefault(s => s.Id == userId);            
 
-            DisptachOnUIThread(() => SocketUsers.Remove(user));
+            DispatchOnUiThread(() =>
+            {
+                OnlineSocketUsers.Remove(user);
+                OfflineSocketUsers.Add(user);
+            });
 
-            if (SocketUsers.Count > 0)
-                SelectedSocketUser = SocketUsers.First();
+            if (OnlineSocketUsers.Count > 0)
+                SelectedSocketUser = OnlineSocketUsers.First();
         }
 
         private async Task NewUserOnline(NewUserOnlineMessage newUserOnlineMessage)
-        {
-            using (var uow = new UnitOfWork(new SocketDbContext()))
-            {
-                var user = await uow.SocketUserRepo.SingleOrDefaultAsync(u => u.Id == newUserOnlineMessage.UserId);
-                if (user != null)
-                {                    
-                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                   {                                           
-                        SocketUsers.Add(user);                                       
-                   });
+        {                                                               
+            DispatchOnUiThread(() => ChangeUserToOnline(newUserOnlineMessage.UserId));
 
-                    if (!_chatManager.Chats.ContainsKey(user.Id))
-                    {                        
-                        _chatManager.Chats.Add(user.Id, new List<ChatMessageModel>());
-                    }
-                }
-                    
-            }
+            if (!_chatManager.Chats.ContainsKey(newUserOnlineMessage.UserId))
+            {                        
+                _chatManager.Chats.Add(newUserOnlineMessage.UserId, new List<ChatMessageModel>());
+            }                                              
         }
 
         private void NewChat(int userFromId)
         {
             if(SelectedSocketUser.Id == userFromId) return;
 
-            var user = SocketUsers.FirstOrDefault(s => s.Id == userFromId);
+            var user = OnlineSocketUsers.FirstOrDefault(s => s.Id == userFromId);
             if (user != null) user.IsMessageUnRead = true;            
         }
+
+        private void ChangeUserToOnline(int id)
+        {
+            var user = OfflineSocketUsers.FirstOrDefault(s => s.Id == id);
+            OfflineSocketUsers.Remove(user);
+
+            if(user == null) return;
+            
+            OnlineSocketUsers.Add(user);
+        }        
+
 
         private void UserSelected()
         {
@@ -129,14 +171,30 @@ namespace Networking.Client.Application.ViewModels
 
         private void Logoff()
         {
-            SocketUsers.Clear();
+            OnlineSocketUsers.Clear();
             SelectedSocketUser = new SocketUser();
         }
 
-        private void DisptachOnUIThread(Action function)
+        private void DispatchOnUiThread(Action function)
         {
             System.Windows.Application.Current.Dispatcher.Invoke(function);
         }
 
+        private async void LoadView()
+        {
+            IsLoading = true;
+            using (var uow = new UnitOfWork(new SocketDbContext()))
+            {
+                var users = await uow.SocketUserRepo.GetAllAsync();
+                var socketUsers = users.ToList();
+                var currentUser = socketUsers.FirstOrDefault(c => c.Id == _currentUser.Id);
+                socketUsers.Remove(currentUser);
+                OfflineSocketUsers = new ObservableCollection<SocketUser>(socketUsers);                
+            }
+
+            IsLoading = false;
+
+            _eventAggregator.GetEvent<OfflineUsersLoadedEvent>().Publish();
+        }
     }
 }

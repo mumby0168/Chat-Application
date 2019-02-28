@@ -18,7 +18,7 @@ namespace Networking.Client.Application.ViewModels
         {
             _regionManager = regionManager;
             _regionManager.RegisterViewWithRegion(RegionNames.MainRegion, typeof(LoginView));
-            _regionManager.RegisterViewWithRegion("UsersRegion", typeof(UsersListView));
+            _regionManager.RegisterViewWithRegion(RegionNames.LeftPanel, typeof(UsersListView));
         }
     }
 }

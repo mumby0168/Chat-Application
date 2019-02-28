@@ -37,7 +37,10 @@ namespace Networking.Client.Application.ViewModels
             _currentUser = currentUser;
             _chatManager = chatManager;
             _regionManager = regionManager;
-            _eventAggregator.GetEvent<UserLoginEvent>().Subscribe(UserLogin);        
+
+            _eventAggregator.GetEvent<UserLoginEvent>().Subscribe(UserLogin);
+            _eventAggregator.GetEvent<OfflineUsersLoadedEvent>().Subscribe(() => IsConnectAllowed = true);
+
 
             ServerModel = new ServerModel();
             ServerModel.IpAddress = "192.168.1.97";
@@ -47,7 +50,7 @@ namespace Networking.Client.Application.ViewModels
             ServerConnectCommand = new DelegateCommand(Connect);
 
             ToggleBaseCommand = new DelegateCommand<object>(ToggleBaseColor);
-
+            CurrentUserClickedCommand = new DelegateCommand(CurrentUserClicked);
             LogoutCommand = new DelegateCommand(Logout);
         }
 
@@ -57,6 +60,8 @@ namespace Networking.Client.Application.ViewModels
         public DelegateCommand<object> ToggleBaseCommand { get; set; }
 
         public DelegateCommand LogoutCommand { get; set; }
+
+        public DelegateCommand CurrentUserClickedCommand { get; set; }
 
         #region Properties
 
@@ -70,11 +75,25 @@ namespace Networking.Client.Application.ViewModels
 
         private ServerModel _serverModel;
 
-        public ServerModel ServerModel      
+        public ServerModel ServerModel
         {
             get { return _serverModel; }
             set => SetProperty(ref _serverModel, value);
         }
+
+
+        private bool _isConnectAllowed;
+
+        public bool IsConnectAllowed
+        {
+            get { return _isConnectAllowed; }
+            set
+            {
+                _isConnectAllowed = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
 
         #endregion
@@ -89,6 +108,7 @@ namespace Networking.Client.Application.ViewModels
             ServerModel.ServerStatus = ServerStatus.Disconnected;
             _regionManager.RequestNavigate(RegionNames.MainRegion, nameof(LoginView));         
             _eventAggregator.GetEvent<LogoffEvent>().Publish();
+            IsConnectAllowed = false;
         }
 
         public void ToggleBaseColor(object value)
@@ -117,6 +137,11 @@ namespace Networking.Client.Application.ViewModels
                     MessageBox.Show("Failed Connecting to the server.");
                     ServerModel.ServerStatus = ServerStatus.Failed;
                 });
+        }
+
+        public void CurrentUserClicked()
+        {
+            _regionManager.RequestNavigate(RegionNames.LeftPanel, nameof(EditProfileView));
         }
 
         #region Event Methods

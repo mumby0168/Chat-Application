@@ -176,6 +176,7 @@
     <Compile Include="EventArgs\MessageReceivedEventArgs.cs" />
     <Compile Include="Events\ChangeBaseColourEvent.cs" />
     <Compile Include="Events\LogoffEvent.cs" />
+    <Compile Include="Events\OfflineUsersLoadedEvent.cs" />
     <Compile Include="Events\UserLoginEvent.cs" />
     <Compile Include="Events\UserSelected.cs" />
     <Compile Include="Models\ChatMessageModel.cs" />
@@ -201,6 +202,9 @@
     <Compile Include="Views\ChatView.xaml.cs">
       <DependentUpon>ChatView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\EditProfileView.xaml.cs">
+      <DependentUpon>EditProfileView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\RegisterView.xaml.cs">
       <DependentUpon>RegisterView.xaml</DependentUpon>
     </Compile>
@@ -212,6 +216,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ChatView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditProfileView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

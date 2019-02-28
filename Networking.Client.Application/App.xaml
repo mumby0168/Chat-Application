@@ -11,7 +11,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.BlueGrey.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -21,6 +21,12 @@
             <Style x:Key="FullWidthItem" TargetType="ListBoxItem">
                 <Setter Property="Width" Value="Auto"></Setter>
             </Style>
+
+            <ControlTemplate x:Key="LoadingTemplate">
+                <ProgressBar HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True">
+
+                </ProgressBar>
+            </ControlTemplate>
 
             <!--User view data template-->
             <DataTemplate x:Key="UserListItemTemplate" DataType="model:SocketUser">

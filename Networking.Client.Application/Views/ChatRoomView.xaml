@@ -23,7 +23,7 @@
 
         <ToolBarTray  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Height="Auto">
             <ToolBar  Style="{DynamicResource MaterialDesignToolBar}" ClipToBounds="False">
-                <materialDesign:Chip Content="{Binding User.Name}">
+                <materialDesign:Chip Command="{Binding Path=CurrentUserClickedCommand}" Content="{Binding User.Name}">
                     <materialDesign:Chip.Icon>
                         <Image Source="{Binding Path=User.ProfilePicture, Converter={StaticResource ByteArrayToBitMapConverter}, UpdateSourceTrigger=PropertyChanged}"></Image>
                     </materialDesign:Chip.Icon>
@@ -50,7 +50,7 @@
                 <Separator/>
                 <TextBox Text="{Binding ServerModel.IpAddress}" materialDesign:HintAssist.Hint="Server IP Address"></TextBox>
                 <TextBox Text="{Binding ServerModel.Port}" materialDesign:HintAssist.Hint="Server Port"></TextBox>
-                <Button Content="Connect" Command="{Binding ServerConnectCommand}"></Button>
+                <Button Content="Connect" Command="{Binding ServerConnectCommand}" IsEnabled="{Binding Path=IsConnectAllowed, UpdateSourceTrigger=PropertyChanged}"></Button>
                 <Separator/>
                 <StackPanel Orientation="Horizontal" Margin="8">
                     <TextBlock VerticalAlignment="Center">Dark</TextBlock>

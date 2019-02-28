@@ -48,9 +48,11 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <TextBox md:HintAssist.Hint="Please enter your message." AcceptsReturn="True" TextWrapping="Wrap" MaxHeight="200" VerticalAlignment="Center" Text="{Binding Path=Message, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0"></TextBox>
+            <Separator VerticalAlignment="Top" Grid.ColumnSpan="2"></Separator>
 
-            <Button Command="{Binding SendMessageCommand}" Margin="5" Grid.Column="1" Content="Send"></Button>
+            <TextBox md:HintAssist.Hint="Please enter your message." AcceptsReturn="True" TextWrapping="Wrap" MaxHeight="200" VerticalAlignment="Bottom" Text="{Binding Path=Message, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0"></TextBox>
+
+            <Button Command="{Binding SendMessageCommand}" Margin="5,0" Grid.Column="1" Content="Send" VerticalAlignment="Bottom"></Button>
         </Grid>
 
     </Grid>
