@@ -30,7 +30,7 @@ namespace Networking.Client.Application.ViewModels
             _currentUser = currentUser;
             _eventAggregator.GetEvent<UserSelected>().Subscribe(UserSelected);
             _chatManager.NewMessageCallback(UpdateChat);
-            SocketUser = new SocketUser();
+            
             ChatMessages = new ObservableCollection<ChatMessageModel>();
             //ChatMessages.Add(new ChatMessageModel()
             //{
@@ -58,7 +58,7 @@ namespace Networking.Client.Application.ViewModels
             set { _chatMessages = value; RaisePropertyChanged();}
         }
 
-        public SocketUser SocketUser { get; set; }
+        public int SocketUserId { get; set; }
 
         private string _message;
 
@@ -71,8 +71,7 @@ namespace Networking.Client.Application.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-            
+        
         #endregion
 
 
@@ -90,7 +89,7 @@ namespace Networking.Client.Application.ViewModels
             {
                 Message = Message,
                 UserFromId = (ushort) _currentUser.Id,
-                UserToId = (ushort) SocketUser.Id
+                UserToId = (ushort) SocketUserId
             };
 
             await _chatManager.SendChatMessage(chatMessage);
@@ -102,28 +101,25 @@ namespace Networking.Client.Application.ViewModels
         {
             //TODO: Fix Returns            
 
-            var chat = _chatManager.Chats.FirstOrDefault(c => c.Key.Id == id);
+            if (_chatManager.Chats.TryGetValue(id, out var chat))
+            {
+                SocketUserId = id;
 
-            if (chat.Value == null) return;
-
-            if (chat.Key == null) return;
-
-            SocketUser = chat.Key;
-
-            ChatMessages = new ObservableCollection<ChatMessageModel>(chat.Value);
+                ChatMessages = new ObservableCollection<ChatMessageModel>(chat);
+            }            
         }
 
-        private void UpdateChat(SocketUser socketUser)
+        private void UpdateChat(int id)
         {
-            if (socketUser.Id == SocketUser.Id)
+            if (id == SocketUserId)
             {
-                UserSelected(socketUser.Id);
+                UserSelected(id);
             }
         }
 
         private void Logoff()
         {
-            SocketUser = new SocketUser();
+            SocketUserId = 0;
             ChatMessages = new ObservableCollection<ChatMessageModel>();
             Message = "";
         }

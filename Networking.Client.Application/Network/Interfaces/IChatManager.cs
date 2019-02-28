@@ -11,9 +11,9 @@ namespace Networking.Client.Application.Network.Interfaces
 {
     public interface IChatManager
     {
-        Dictionary<SocketUser, List<ChatMessageModel>> Chats { get; set; }
+        Dictionary<int, List<ChatMessageModel>> Chats { get; set; }
 
-        void NewMessageCallback(Action<SocketUser> callbackFunc);
+        void NewMessageCallback(Action<int> callbackFunc);
 
         Task SendChatMessage(ChatMessage chatMessage);
     }

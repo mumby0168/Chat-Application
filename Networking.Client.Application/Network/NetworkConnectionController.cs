@@ -30,12 +30,13 @@ namespace Networking.Client.Application.Network
         {
             _networkDataService = networkDataService;
             _currentUser = currentUser;
-            _cancellationTokenSource = new CancellationTokenSource();
-            _cancellationToken = _cancellationTokenSource.Token;
+           
         }        
 
         public void Connect(IPEndPoint ipEndPoint, int userId, Action connectedCallback, Action failedConnectionCallback)
         {
+            _cancellationTokenSource = new CancellationTokenSource();
+            _cancellationToken = _cancellationTokenSource.Token;
             _connectionFailedCallback = failedConnectionCallback;
             _connectionSuccseful = connectedCallback;
             _currentUser.Id = userId;

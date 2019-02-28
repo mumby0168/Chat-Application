@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -24,8 +25,7 @@ namespace Networking.Client.Application.ViewModels
         private readonly INetworkConnectionController _networkConnectionController;
         private readonly IEventAggregator _eventAggregator;
         private readonly IChatManager _chatManager;
-
-        private List<SocketUser> _users = new List<SocketUser>();
+        
         private ObservableCollection<SocketUser> _socketUsers;
 
         public UsersListViewModel(INetworkConnectionController networkConnectionController, IEventAggregator eventAggregator, IChatManager chatManager)
@@ -35,8 +35,7 @@ namespace Networking.Client.Application.ViewModels
             _chatManager = chatManager;
             _networkConnectionController.MessageReceivedEventHandler += NewMessageFromServer;
             SelectedSocketUser = new SocketUser();
-                SocketUsers = new ObservableCollection<SocketUser>();
-            SocketUsers.Add(new SocketUser(){Name = "Billy Mumby", Email = "billy.mumby@outlook.com"});
+            SocketUsers = new ObservableCollection<SocketUser>();            
             _eventAggregator.GetEvent<LogoffEvent>().Subscribe(Logoff);
         }
 
@@ -57,9 +56,12 @@ namespace Networking.Client.Application.ViewModels
             get { return _selectedSocketUser; }
             set
             {
-                value.IsMessageUnRead = false;
-                _selectedSocketUser = value;
-                UserSelected();
+                if (value != null)
+                {
+                    value.IsMessageUnRead = false;
+                    _selectedSocketUser = value;
+                    UserSelected();
+                }                
             }
         }
 
@@ -82,8 +84,13 @@ namespace Networking.Client.Application.ViewModels
 
         private void RemoveUserFromList(int userId)
         {
-            var user = SocketUsers.FirstOrDefault(s => s.Id == userId);
-            SocketUsers.Remove(user);
+            Debug.WriteLine("Remove user with id: " + userId);
+            var user = SocketUsers.FirstOrDefault(s => s.Id == userId);            
+
+            DisptachOnUIThread(() => SocketUsers.Remove(user));
+
+            if (SocketUsers.Count > 0)
+                SelectedSocketUser = SocketUsers.First();
         }
 
         private async Task NewUserOnline(NewUserOnlineMessage newUserOnlineMessage)
@@ -95,14 +102,12 @@ namespace Networking.Client.Application.ViewModels
                 {                    
                     System.Windows.Application.Current.Dispatcher.Invoke(() =>
                    {                                           
-                        _users.Add(user);
-                        SocketUsers = new ObservableCollection<SocketUser>(_users);                        
+                        SocketUsers.Add(user);                                       
                    });
 
-                    if (!_chatManager.Chats.ContainsKey(user))
-                    {
-                        Debug.WriteLine("new chat user added to dictionary.");
-                        _chatManager.Chats.Add(user, new List<ChatMessageModel>());
+                    if (!_chatManager.Chats.ContainsKey(user.Id))
+                    {                        
+                        _chatManager.Chats.Add(user.Id, new List<ChatMessageModel>());
                     }
                 }
                     
@@ -124,8 +129,13 @@ namespace Networking.Client.Application.ViewModels
 
         private void Logoff()
         {
-            SocketUsers = new ObservableCollection<SocketUser>();
+            SocketUsers.Clear();
             SelectedSocketUser = new SocketUser();
+        }
+
+        private void DisptachOnUIThread(Action function)
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(function);
         }
 
     }

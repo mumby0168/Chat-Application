@@ -50,10 +50,7 @@ namespace Server.Client_Services
             }
             catch (Exception e)
             {
-                System.Console.WriteLine("Exception thrown in Write() " + e.Message);
-                System.Console.WriteLine("client with id " + clientConnection.UserId + " Disconnected.");
-                clientConnection.Stream.Close();
-                _clientsHolder.ClientConnections.Remove(clientConnection);
+                throw e;
             }
         }
     }

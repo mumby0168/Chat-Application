@@ -17,43 +17,37 @@ namespace Networking.Client.Application.Network
     {
         private readonly INetworkConnectionController _networkConnectionController;
 
-        private List<Action<SocketUser>> _callbacks;
+        private List<Action<int>> _callbacks;
 
         public ChatManager(INetworkConnectionController networkConnectionController)
         {
             _networkConnectionController = networkConnectionController;
             _networkConnectionController.MessageReceivedEventHandler += MessageReceived;
-            Chats = new Dictionary<SocketUser, List<ChatMessageModel>>();
-            _callbacks = new List<Action<SocketUser>>();
+            Chats = new Dictionary<int, List<ChatMessageModel>>();
+            _callbacks = new List<Action<int>>();
         }
 
-        public Dictionary<SocketUser, List<ChatMessageModel>> Chats { get; set; }
+        public Dictionary<int, List<ChatMessageModel>> Chats { get; set; }
 
-        public void NewMessageCallback(Action<SocketUser>callbackFunc)
+        public void NewMessageCallback(Action<int>callbackFunc)
         {
             _callbacks.Add(callbackFunc);
         }
 
         public async Task SendChatMessage(ChatMessage chatMessage)
         {
-            var userTo = Chats.FirstOrDefault(c => c.Key.Id == chatMessage.UserToId);
+            if (Chats.TryGetValue(chatMessage.UserToId, out var chat))
+            {
+                chat.Add(new ChatMessageModel() { IsSent = true, Message = chatMessage.Message, TimeStamp = DateTime.Now });
 
-            if(userTo.Value == null || userTo.Key == null)
-                return;
+                CallCallbacks(chatMessage.UserToId);
 
-            userTo.Value.Add(new ChatMessageModel(){IsSent = true, Message = chatMessage.Message, TimeStamp = DateTime.Now});
-
-            CallCallbacks(userTo.Key);
-
-            await _networkConnectionController.SendMessage(chatMessage);            
+                await _networkConnectionController.SendMessage(chatMessage);
+            }                         
         }
 
         private void MessageReceived(object sender, MessageReceivedEventArgs args)
-        {
-            Debug.WriteLine("Chat manager has data.");
-
-            Debug.WriteLine(args.Message.MessageType);
-
+        {                    
             switch (args.Message.MessageType)
             {                
                 case MessageType.Chat:
@@ -67,37 +61,34 @@ namespace Networking.Client.Application.Network
 
         private void ProcessUserOffline(UserOfflineMessage message)
         {
-            var chat = Chats.FirstOrDefault(c => c.Key.Id == message.UsersId);
-            Chats.Remove(chat.Key);
-            CallCallbacks(Chats.First().Key);
+            if (Chats.ContainsKey(message.UsersId))
+                Chats.Remove(message.UsersId);
+
+
+            if(Chats.Count > 1)
+                CallCallbacks(Chats.First().Key);
         }
 
         private void ProcessChatMessage(ChatMessage chatMessage)
         {
-            var chat = Chats.FirstOrDefault(d => d.Key.Id == chatMessage.UserFromId);
-
-            if (chat.Value == null)
+            if (Chats.TryGetValue(chatMessage.UserFromId, out var chat))
             {
-                Debug.WriteLine("list is null.");
-                return;                
-            }
-            
-            chat.Value.Add(new ChatMessageModel()
-            {
-                IsSent = false,
-                Message = chatMessage.Message,
-                TimeStamp = DateTime.Now
-            });
+                chat.Add(new ChatMessageModel()
+                {
+                    IsSent = false,
+                    Message = chatMessage.Message,
+                    TimeStamp = DateTime.Now
+                });
 
-            if (chat.Key == null) return;           
-            CallCallbacks(chat.Key);
+                CallCallbacks(chatMessage.UserFromId);
+            }            
         }        
 
-        private void CallCallbacks(SocketUser socketUser)
+        private void CallCallbacks(int userId)
         {
             foreach (var callback in _callbacks)
             {
-                callback.Invoke(socketUser);
+                callback.Invoke(userId);
             }
         }
     }
