@@ -6,7 +6,7 @@ using Sockets.DataStructures.Base;
 
 namespace Sockets.DataStructures.Messages
 {
-    class UserTypingMessage : MessageBase
+    public class UserTypingMessage : MessageBase
     {
         public UserTypingMessage()
         {

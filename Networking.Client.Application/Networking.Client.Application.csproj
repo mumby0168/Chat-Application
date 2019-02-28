@@ -192,6 +192,7 @@
     <Compile Include="Services\Concrete\FileProcessorService.cs" />
     <Compile Include="Services\ICurrentUser.cs" />
     <Compile Include="Services\IFileProcessorService.cs" />
+    <Compile Include="Static\MainThread.cs" />
     <Compile Include="ViewModels\ChatRoomViewModel.cs" />
     <Compile Include="ViewModels\ChatViewModel.cs" />
     <Compile Include="ViewModels\EditProfileViewModel.cs" />

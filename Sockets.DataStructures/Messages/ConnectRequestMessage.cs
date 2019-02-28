@@ -9,7 +9,7 @@ namespace Sockets.DataStructures.Messages
     public class ConnectRequestMessage : MessageBase
     {
         public ConnectRequestMessage()
-        {
+        {       
             MessageType = MessageType.Connect;
         }
         

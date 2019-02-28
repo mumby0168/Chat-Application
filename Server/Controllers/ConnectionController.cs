@@ -75,6 +75,10 @@ namespace Server.Controllers
                     _clientDisconnector.UserDisconnected(msg.UsersId);
                     _clientWriter.WriteMessageToAllClients(new UserOfflineMessage { UsersId = msg.UsersId });
                     break;
+                case MessageType.Typing:
+                    var typingMessage = message as UserTypingMessage;
+                    _clientWriter.WriteMessageToClient(typingMessage.UserTypingToId, message);
+                    break;                
             }
         }
 

@@ -50,7 +50,8 @@ namespace Server.Client_Services
             }
             catch (Exception e)
             {
-                throw e;
+                _clientsHolder.ClientConnections.Remove(clientConnection);
+                System.Console.WriteLine("Error in the Write() method + " + e.Message);
             }
         }
     }

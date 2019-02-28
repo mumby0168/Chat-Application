@@ -18,6 +18,9 @@
                 <RowDefinition/>
         </Grid.RowDefinitions>
 
+
+            <md:PackIcon Kind="Pencil" Visibility="{Binding Path=IsTyping, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Bottom" HorizontalAlignment="Left"></md:PackIcon>
+
             <ListView ItemsSource="{Binding ChatMessages, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
