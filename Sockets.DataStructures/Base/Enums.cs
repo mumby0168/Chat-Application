@@ -13,7 +13,8 @@ namespace Sockets.DataStructures.Base
         NewUserOnline = 4,
         UserOffline = 5,
         UserLogoff = 6,
-        Typing = 7
+        Typing = 7,
+        Idle = 8
     }
 
 }

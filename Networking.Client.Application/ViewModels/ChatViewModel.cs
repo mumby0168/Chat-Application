@@ -38,21 +38,8 @@ namespace Networking.Client.Application.ViewModels
             _eventAggregator.GetEvent<UserSelected>().Subscribe(UserSelected);
             _chatManager.NewMessageCallback(UpdateChat);
             
-            ChatMessages = new ObservableCollection<ChatMessageModel>();
-            //ChatMessages.Add(new ChatMessageModel()
-            //{
-            //    IsSent = false,
-            //    Message = "Hello there",
-            //    TimeStamp = DateTime.Now
-            //});
-            //ChatMessages.Add(new ChatMessageModel()
-            //{
-            //    IsSent = true,
-            //    Message = "Hello mate",
-            //    TimeStamp = DateTime.Now
-            //});
-
-            IsTyping = true;
+            ChatMessages = new ObservableCollection<ChatMessageModel>();           
+            
             SendMessageCommand = new DelegateCommand(async () => await SendMessage());
 
             KeyDownCommand = new DelegateCommand(OnKeyDown);
@@ -111,7 +98,6 @@ namespace Networking.Client.Application.ViewModels
 
         #endregion
 
-
         //COMMANDS
         public DelegateCommand SendMessageCommand { get; set; }
 
@@ -136,9 +122,7 @@ namespace Networking.Client.Application.ViewModels
 
         //PRIVATE METHODS
         private void UserSelected(int id)
-        {
-            //TODO: Fix Returns            
-
+        {            
             if (_chatManager.Chats.TryGetValue(id, out var chat))
             {
                 SocketUserId = id;

@@ -40,8 +40,7 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <ToggleButton
-                                VerticalAlignment="Center"
-                                IsChecked="{Binding IsMessageUnRead}"
+                                VerticalAlignment="Center"                                
                                 Style="{StaticResource MaterialDesignActionLightToggleButton}"
                                  >
                                     <Image Source="{Binding ProfilePicture, Converter={StaticResource ByteArrayToBitMapConverter}, UpdateSourceTrigger=PropertyChanged}"></Image>
@@ -61,11 +60,21 @@
                             <DataTrigger
                             Binding="{Binding IsMessageUnRead}"
                             Value="True">
-                                <Setter
-                                TargetName="Border"
-                                Property="Background"
-                                Value="{DynamicResource MaterialDesignSelection}" />
-                            </DataTrigger>
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" RepeatBehavior="Forever" Duration="0:0:4" From="1" To="0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1"></DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
                         </DataTemplate.Triggers>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

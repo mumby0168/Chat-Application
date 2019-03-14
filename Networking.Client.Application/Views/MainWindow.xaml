@@ -12,7 +12,7 @@
         Background="{StaticResource MaterialDesignPaper}"
         FontFamily="{StaticResource MaterialDesignFont}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        Title="MainWindow" Height="600" Width="900">
+        Title="Mumby Chat Client" Height="600" Width="900">
 
     <Grid>
         <ContentControl prism:RegionManager.RegionName="{Binding Source={x:Static config:RegionNames.MainRegion}}"></ContentControl>

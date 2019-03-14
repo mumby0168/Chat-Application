@@ -18,8 +18,15 @@
                 <RowDefinition/>
         </Grid.RowDefinitions>
 
+            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Bottom"  Visibility="{Binding Path=IsTyping, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                <ContentPresenter.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="Keyboard" FontSize="22"></md:PackIcon>
+                    </StackPanel>
+                </ContentPresenter.Content>
+            </ContentPresenter>    
 
-            <md:PackIcon Kind="Pencil" Visibility="{Binding Path=IsTyping, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Bottom" HorizontalAlignment="Left"></md:PackIcon>
+          
 
             <ListView ItemsSource="{Binding ChatMessages, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemContainerStyle>

@@ -31,7 +31,13 @@ namespace Server.Controllers
 
             var ipaddresses = Dns.GetHostAddresses(hostName);
 
-            Console.WriteLine("Server running on: " + ipaddresses[1]);
+            for(int i = 0 ; i < ipaddresses.Length; i++)
+            {
+                Console.WriteLine(i + ": " + ipaddresses[i]);
+            }
+
+            Console.WriteLine("Please select a ip address to run on: ");
+            
 
             TcpListener tcpListener;
             tcpListener = new TcpListener(ipaddresses[1], 2500);

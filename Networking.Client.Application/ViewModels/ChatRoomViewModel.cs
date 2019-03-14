@@ -110,6 +110,7 @@ namespace Networking.Client.Application.ViewModels
             _regionManager.RequestNavigate(RegionNames.MainRegion, nameof(LoginView));         
             _eventAggregator.GetEvent<LogoffEvent>().Publish();
             IsConnectAllowed = false;
+            System.Windows.Forms.Application.Idle -= ApplicationOnIdle;
         }
 
         public void ToggleBaseColor(object value)
@@ -138,6 +139,13 @@ namespace Networking.Client.Application.ViewModels
                     MessageBox.Show("Failed Connecting to the server.");
                     ServerModel.ServerStatus = ServerStatus.Failed;
                 });
+
+            System.Windows.Forms.Application.Idle += ApplicationOnIdle;
+        }
+
+        private void ApplicationOnIdle(object sender, System.EventArgs e)
+        {
+            
         }
 
         public void CurrentUserClicked()
