@@ -27,16 +27,20 @@ namespace Networking.Client.Application.ViewModels
         private readonly IChatManager _chatManager;
         private readonly ICurrentUser _currentUser;
         private readonly INetworkConnectionController _networkConnectionController;
+        private readonly IFileProcessorService _fileProcessorService;
 
 
-        public ChatViewModel(IEventAggregator eventAggregator, IChatManager chatManager, ICurrentUser currentUser, INetworkConnectionController networkConnectionController)
+        public ChatViewModel(IEventAggregator eventAggregator, IChatManager chatManager, ICurrentUser currentUser, INetworkConnectionController networkConnectionController, IFileProcessorService fileProcessorService)
         {
             _eventAggregator = eventAggregator;
             _chatManager = chatManager;
             _currentUser = currentUser;
             _networkConnectionController = networkConnectionController;
+            _fileProcessorService = fileProcessorService;
             _eventAggregator.GetEvent<UserSelected>().Subscribe(UserSelected);
             _chatManager.NewMessageCallback(UpdateChat);
+
+            Images = new ObservableCollection<byte[]>();
             
             ChatMessages = new ObservableCollection<ChatMessageModel>();           
             
@@ -44,9 +48,19 @@ namespace Networking.Client.Application.ViewModels
 
             KeyDownCommand = new DelegateCommand(OnKeyDown);
 
+            SelectImageCommand = new DelegateCommand(SelectImage);
+
             _networkConnectionController.MessageReceivedEventHandler += MessageReceivedEventHandler;
 
             _eventAggregator.GetEvent<LogoffEvent>().Subscribe(Logoff);
+        }
+
+        private async void SelectImage()
+        {
+            string imagePath =_fileProcessorService.SelectFile();
+            byte[] image = await _fileProcessorService.GetBytesFromImage(imagePath);
+            ImageCount++;
+            Images.Add(image);
         }
 
         private void MessageReceivedEventHandler(object sender, MessageReceivedEventArgs e)
@@ -59,8 +73,21 @@ namespace Networking.Client.Application.ViewModels
             }
         }
 
-
+            
         #region Properties
+
+        private int _imageCount;
+
+        public int ImageCount
+        {
+            get { return _imageCount; }
+            set
+            {
+                _imageCount = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private ObservableCollection<ChatMessageModel> _chatMessages;
         public ObservableCollection<ChatMessageModel> ChatMessages
@@ -94,6 +121,15 @@ namespace Networking.Client.Application.ViewModels
                 RaisePropertyChanged();
             }
         }
+            
+        private ObservableCollection<byte[]> _images;
+
+        public ObservableCollection<byte[]> Images
+        {
+            get { return _images; }
+            set { _images = value; OnPropertyChanged(); }
+        }
+
 
 
         #endregion
@@ -102,6 +138,8 @@ namespace Networking.Client.Application.ViewModels
         public DelegateCommand SendMessageCommand { get; set; }
 
         public DelegateCommand KeyDownCommand { get; set; }
+        
+        public DelegateCommand SelectImageCommand { get; set; }
 
 
         //COMMAND METHODS
@@ -117,6 +155,8 @@ namespace Networking.Client.Application.ViewModels
             };
 
             await _chatManager.SendChatMessage(chatMessage);
+
+            ImageCount = 0;
         }
 
 
