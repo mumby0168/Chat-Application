@@ -37,9 +37,9 @@ namespace Sockets.DataStructures.Services
                 case MessageType.Connect:
                     return ConnectRequestMessage.Decode(dataBufferList);
                 case MessageType.Chat:
-                    return ImageMessage.Decode(dataBuffer);
-                case MessageType.Image:
                     return ChatMessage.Decode(dataBufferList);
+                case MessageType.Image:
+                    return ImageMessage.Decode(dataBuffer);
                 case MessageType.NewUserOnline:
                     return NewUserOnlineMessage.Decode(dataBufferList);
                 case MessageType.UserLogoff:
