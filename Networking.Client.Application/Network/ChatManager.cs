@@ -23,11 +23,11 @@ namespace Networking.Client.Application.Network
         {
             _networkConnectionController = networkConnectionController;
             _networkConnectionController.MessageReceivedEventHandler += MessageReceived;
-            Chats = new Dictionary<int, List<ChatMessageModel>>();
+            Chats = new Dictionary<int, List<object>>();
             _callbacks = new List<Action<int>>();
         }
 
-        public Dictionary<int, List<ChatMessageModel>> Chats { get; set; }
+        public Dictionary<int, List<object>> Chats { get; set; }
 
         public void NewMessageCallback(Action<int>callbackFunc)
         {
@@ -43,7 +43,19 @@ namespace Networking.Client.Application.Network
                 CallCallbacks(chatMessage.UserToId);
 
                 await _networkConnectionController.SendMessage(chatMessage);
-            }                         
+            }               
+        }
+
+        public async Task SendImageMessage(ImageMessage imageMessage)
+        {
+            if (Chats.TryGetValue(imageMessage.UserToId, out var chat))
+            {
+                chat.Add(imageMessage.ImageData);
+
+                CallCallbacks(imageMessage.UserToId);
+
+                await _networkConnectionController.SendMessage(imageMessage);
+            }
         }
 
         private void MessageReceived(object sender, MessageReceivedEventArgs args)
@@ -55,7 +67,11 @@ namespace Networking.Client.Application.Network
                     break;
                 case MessageType.UserOffline:
                     ProcessUserOffline((UserOfflineMessage)args.Message);
-                    break;                    
+                    break;
+                case MessageType.Image:
+                    ProcessImageMessage((ImageMessage)args.Message);
+                    break;
+
             }
         }
 
@@ -67,6 +83,11 @@ namespace Networking.Client.Application.Network
 
             if(Chats.Count > 1)
                 CallCallbacks(Chats.First().Key);
+        }
+
+        private void ProcessImageMessage(ImageMessage imageMessage)
+        {
+            Debug.WriteLine("image message sent.");
         }
 
         private void ProcessChatMessage(ChatMessage chatMessage)

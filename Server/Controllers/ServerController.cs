@@ -40,7 +40,7 @@ namespace Server.Controllers
             
 
             TcpListener tcpListener;
-            tcpListener = new TcpListener(ipaddresses[1], 2500);
+            tcpListener = new TcpListener(ipaddresses[4], 2500);
             tcpListener.Start();
 
             _connectionController.BeginReadingFromClients();

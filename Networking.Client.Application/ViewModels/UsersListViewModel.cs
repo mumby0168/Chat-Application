@@ -141,7 +141,7 @@ namespace Networking.Client.Application.ViewModels
 
             if (!_chatManager.Chats.ContainsKey(newUserOnlineMessage.UserId))
             {                        
-                _chatManager.Chats.Add(newUserOnlineMessage.UserId, new List<ChatMessageModel>());
+                _chatManager.Chats.Add(newUserOnlineMessage.UserId, new List<object>());
             }                                              
         }
 

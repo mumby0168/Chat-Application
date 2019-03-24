@@ -104,7 +104,7 @@ namespace Networking.Client.Application.ViewModels
         public void Logout()
         {
             _networkConnectionController.SendMessage(new UserLogoffMessage {UsersId = (ushort) _currentUser.Id});
-            _chatManager.Chats = new Dictionary<int, List<ChatMessageModel>>();
+            _chatManager.Chats = new Dictionary<int, List<object>>();
             _networkConnectionController.Disconnect();
             ServerModel.ServerStatus = ServerStatus.Disconnected;
             _regionManager.RequestNavigate(RegionNames.MainRegion, nameof(LoginView));         

@@ -176,6 +176,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\ByteArrayToBitMapConverter.cs" />
+    <Compile Include="Converters\ChatTypeTemplateSelector.cs" />
     <Compile Include="EventArgs\MessageReceivedEventArgs.cs" />
     <Compile Include="Events\ChangeBaseColourEvent.cs" />
     <Compile Include="Events\EditUserEvent.cs" />

@@ -8,9 +8,24 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:converters="clr-namespace:Networking.Client.Application.Converters"
+             xmlns:models="clr-namespace:Networking.Client.Application.Models"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              Background="{StaticResource MaterialDesignPaper}"
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <DataTemplate x:Key="TextTemplate" DataType="{x:Type models:ChatMessageModel}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding Message}"></TextBlock>
+                <Separator/>
+                <TextBlock Text="{Binding TimeStamp, StringFormat={}{0:MM/dd/yyyy hh:mm tt}}"></TextBlock>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="ImageTemplate" DataType="{x:Type system:Byte[]}">
+            <Image Width="100" Height="100" Source="{Binding Converter={StaticResource ByteArrayToBitMapConverter}}"></Image>
+        </DataTemplate>
+    </UserControl.Resources>
     <GroupBox Header="Chat Area" Margin="5">
     <Grid>
             <Grid.RowDefinitions>
@@ -42,16 +57,10 @@
                         </Style.Triggers>
                     </Style>
                 </ListView.ItemContainerStyle>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                    <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding Message}"></TextBlock>
-                        <Separator/>
-                            <TextBlock Text="{Binding TimeStamp, StringFormat={}{0:MM/dd/yyyy hh:mm tt}}"></TextBlock>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                <ListView.ItemTemplateSelector>
+                    <converters:ChatTypeTemplateSelector></converters:ChatTypeTemplateSelector>
+                </ListView.ItemTemplateSelector>
+            </ListView>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

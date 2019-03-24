@@ -77,8 +77,12 @@ namespace Server.Controllers
                     break;
                 case MessageType.Typing:
                     var typingMessage = message as UserTypingMessage;
-                    _clientWriter.WriteMessageToClient(typingMessage.UserTypingToId, message);
-                    break;                
+                    await _clientWriter.WriteMessageToClient(typingMessage.UserTypingToId, message);
+                    break;     
+                case MessageType.Image:
+                    var imageMessage = message as ImageMessage;
+                    await _clientWriter.WriteMessageToClient(imageMessage.UserToId, message);
+                    break;
             }
         }
 

@@ -42,7 +42,7 @@ namespace Networking.Client.Application.ViewModels
 
             Images = new ObservableCollection<byte[]>();
             
-            ChatMessages = new ObservableCollection<ChatMessageModel>();           
+            ChatMessages = new ObservableCollection<object>();           
             
             SendMessageCommand = new DelegateCommand(async () => await SendMessage());
 
@@ -89,8 +89,8 @@ namespace Networking.Client.Application.ViewModels
         }
 
 
-        private ObservableCollection<ChatMessageModel> _chatMessages;
-        public ObservableCollection<ChatMessageModel> ChatMessages
+        private ObservableCollection<object> _chatMessages;
+        public ObservableCollection<object> ChatMessages
         {
             get => _chatMessages;
             set { _chatMessages = value; RaisePropertyChanged();}
@@ -154,9 +154,25 @@ namespace Networking.Client.Application.ViewModels
                 UserToId = (ushort) SocketUserId
             };
 
+            if (Images.Any())
+                await SendImages();
+
             await _chatManager.SendChatMessage(chatMessage);
 
             ImageCount = 0;
+        }
+
+        private async Task SendImages()
+        {
+            foreach (var image in Images)
+            {
+                await _chatManager.SendImageMessage(new ImageMessage
+                {
+                    ImageData = image,
+                    UserFromId = (ushort) _currentUser.Id,
+                    UserToId = (ushort) SocketUserId
+                });
+            }
         }
 
 
@@ -167,7 +183,7 @@ namespace Networking.Client.Application.ViewModels
             {
                 SocketUserId = id;
 
-                ChatMessages = new ObservableCollection<ChatMessageModel>(chat);
+                ChatMessages = new ObservableCollection<object>(chat);
             }            
         }
 
@@ -182,7 +198,7 @@ namespace Networking.Client.Application.ViewModels
         private void Logoff()
         {
             SocketUserId = 0;
-            ChatMessages = new ObservableCollection<ChatMessageModel>();
+            ChatMessages = new ObservableCollection<object>();
             Message = "";
         }
 

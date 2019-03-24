@@ -11,10 +11,12 @@ namespace Networking.Client.Application.Network.Interfaces
 {
     public interface IChatManager
     {
-        Dictionary<int, List<ChatMessageModel>> Chats { get; set; }
+        Dictionary<int, List<object>> Chats { get; set; }
 
         void NewMessageCallback(Action<int> callbackFunc);
 
         Task SendChatMessage(ChatMessage chatMessage);
+
+        Task SendImageMessage(ImageMessage imageMessage);
     }
 }

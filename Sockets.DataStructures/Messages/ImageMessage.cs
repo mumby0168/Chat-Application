@@ -7,7 +7,7 @@ using Sockets.DataStructures.Base;
 
 namespace Sockets.DataStructures.Messages
 {
-    class ImageMessage : MessageBase
+    public class ImageMessage : MessageBase
     {
         public ImageMessage()
         {
@@ -15,17 +15,17 @@ namespace Sockets.DataStructures.Messages
         }
 
 
-        public ushort FromId { get; set; }
+        public ushort UserFromId { get; set; }
 
-        public ushort ToId { get; set; }
+        public ushort UserToId { get; set; }
 
         public byte[] ImageData { get; set; }
 
         public override List<byte> Encode()
         {
             var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(FromId));
-            bytes.AddRange(BitConverter.GetBytes(ToId));
+            bytes.AddRange(BitConverter.GetBytes(UserFromId));
+            bytes.AddRange(BitConverter.GetBytes(UserToId));
             bytes.AddRange(ImageData);
             return bytes;
         }
@@ -34,8 +34,8 @@ namespace Sockets.DataStructures.Messages
         {
             var bytes = encodedData.ToList();
             var imageMessage = new ImageMessage();
-            imageMessage.FromId = BitConverter.ToUInt16(bytes.GetRange(0, 2).ToArray(), 0);
-            imageMessage.FromId = BitConverter.ToUInt16(bytes.GetRange(2, 2).ToArray(), 0);
+            imageMessage.UserFromId = BitConverter.ToUInt16(bytes.GetRange(0, 2).ToArray(), 0);
+            imageMessage.UserFromId = BitConverter.ToUInt16(bytes.GetRange(2, 2).ToArray(), 0);
             bytes.RemoveRange(0,4);
             imageMessage.ImageData = encodedData;
             return imageMessage;
