@@ -50,7 +50,12 @@ namespace Networking.Client.Application.Network
         {
             if (Chats.TryGetValue(imageMessage.UserToId, out var chat))
             {
-                chat.Add(imageMessage.ImageData);
+                chat.Add(new ImageMessageModel
+                {
+                    ImageData = imageMessage.ImageData,
+                    TimeStamp = DateTime.Now,
+                    IsSent = true
+                });
 
                 CallCallbacks(imageMessage.UserToId);
 
@@ -88,6 +93,17 @@ namespace Networking.Client.Application.Network
         private void ProcessImageMessage(ImageMessage imageMessage)
         {
             Debug.WriteLine("image message sent.");
+            if (Chats.TryGetValue(imageMessage.UserFromId, out var chat))
+            {
+                chat.Add(new ImageMessageModel()
+                {
+                    ImageData = imageMessage.ImageData,
+                    IsSent = false,
+                    TimeStamp = DateTime.Now
+                });
+
+                CallCallbacks(imageMessage.UserFromId);
+            }
         }
 
         private void ProcessChatMessage(ChatMessage chatMessage)

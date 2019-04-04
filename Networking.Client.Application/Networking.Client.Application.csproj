@@ -186,6 +186,7 @@
     <Compile Include="Events\UserLoginEvent.cs" />
     <Compile Include="Events\UserSelected.cs" />
     <Compile Include="Models\ChatMessageModel.cs" />
+    <Compile Include="Models\ImageMessageModel.cs" />
     <Compile Include="Models\ServerModel.cs" />
     <Compile Include="Network\ChatManager.cs" />
     <Compile Include="Network\Interfaces\IChatManager.cs" />

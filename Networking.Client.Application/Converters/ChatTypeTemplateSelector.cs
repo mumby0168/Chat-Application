@@ -32,10 +32,10 @@ namespace Networking.Client.Application.Converters
 
             if(item is ChatMessageModel)
                 return usercontrol.Resources["TextTemplate"] as DataTemplate;            
-            else if(item is byte[])
+            else if(item is ImageMessageModel)
                 return usercontrol.Resources["ImageTemplate"] as DataTemplate;
 
-            throw new InvalidOperationException("No Parent user control was found.");
+            throw new InvalidOperationException("No template was found to match the type.");
         }
     }
 }

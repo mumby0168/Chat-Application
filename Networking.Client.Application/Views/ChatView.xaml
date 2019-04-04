@@ -22,8 +22,12 @@
                 <TextBlock Text="{Binding TimeStamp, StringFormat={}{0:MM/dd/yyyy hh:mm tt}}"></TextBlock>
             </StackPanel>
         </DataTemplate>
-        <DataTemplate x:Key="ImageTemplate" DataType="{x:Type system:Byte[]}">
-            <Image Width="100" Height="100" Source="{Binding Converter={StaticResource ByteArrayToBitMapConverter}}"></Image>
+        <DataTemplate x:Key="ImageTemplate" DataType="{x:Type models:ImageMessageModel}">
+            <StackPanel Orientation="Vertical">
+                <Image Width="100" Height="100" Source="{Binding Path=ImageData, Converter={StaticResource ByteArrayToBitMapConverter}}"></Image>
+                <Separator/>
+                <TextBlock Text="{Binding TimeStamp, StringFormat={}{0:MM/dd/yyyy hh:mm tt}}"></TextBlock>
+            </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
     <GroupBox Header="Chat Area" Margin="5">

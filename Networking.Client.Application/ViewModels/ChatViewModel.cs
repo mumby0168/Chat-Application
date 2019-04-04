@@ -168,6 +168,7 @@ namespace Networking.Client.Application.ViewModels
             await _chatManager.SendChatMessage(chatMessage);
 
             ImageCount = 0;
+            Images = new ObservableCollection<byte[]>();
         }
 
         private async Task SendImages()
