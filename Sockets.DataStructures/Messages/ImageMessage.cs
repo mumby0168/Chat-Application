@@ -30,14 +30,13 @@ namespace Sockets.DataStructures.Messages
             return bytes;
         }
 
-        public static ImageMessage Decode(byte[] encodedData)
-        {
-            var bytes = encodedData.ToList();
+        public static ImageMessage Decode(List<byte> encodedData)
+        {            
             var imageMessage = new ImageMessage();
-            imageMessage.UserFromId = BitConverter.ToUInt16(bytes.GetRange(0, 2).ToArray(), 0);
-            imageMessage.UserFromId = BitConverter.ToUInt16(bytes.GetRange(2, 2).ToArray(), 0);
-            bytes.RemoveRange(0,4);
-            imageMessage.ImageData = encodedData;
+            imageMessage.UserFromId = BitConverter.ToUInt16(encodedData.GetRange(0, 2).ToArray(), 0);
+            imageMessage.UserToId = BitConverter.ToUInt16(encodedData.GetRange(2, 2).ToArray(), 0);
+            encodedData.RemoveRange(0,4);
+            imageMessage.ImageData = encodedData.ToArray();
             return imageMessage;
         }
     }

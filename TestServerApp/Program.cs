@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Sockets.DataStructures;
+using Sockets.DataStructures.Base;
 using Sockets.DataStructures.Messages;
 using Sockets.DataStructures.Services;
 
@@ -18,38 +20,60 @@ namespace TestServerApp
 
         static async Task Main(string[] args)
         {
-            var client1Id = await SetupClient();
 
-            int i = 0;
+            Thread.Sleep(5000);
+            Console.WriteLine("Enter an ip address");
+            string ip = "";
+            var client1Id = await SetupClient(ip);
+
+            int i = 0;            
 
             do
             {
                 Console.WriteLine("Enter a client id to send a message to: ");
                 int id = int.Parse(Console.ReadLine());
-                Console.WriteLine("Enter message to send: ");
-                string message = Console.ReadLine();
 
-                var chatmsg = new ChatMessage()
+                MessageBase msg = null;
+
+                Console.WriteLine("enter a message type to send \n 1: chat \n 2: image");
+                int answer = int.Parse(Console.ReadLine());
+
+                switch (answer)
                 {
-                    UserToId = (ushort) id,
-                    UserFromId = (ushort) client1Id.Item1,
-                    Message = message
-                };
+                    case 1:
+                        msg = new ChatMessage()
+                        {
+                            UserToId = (ushort)id,
+                            Message = "test chat message",
+                            UserFromId = 7
+                        };
+                        break;
+                    case 2:
+                        msg = new ImageMessage()
+                        {
+                            UserToId = (ushort) id,
+                            ImageData = await File.ReadAllBytesAsync(
+                                @"C:\Users\billy\Pictures\Game Art\mouse-spritesheet.png"),
+                            UserFromId = 7
+                        };
+                        break;
+                }
 
-                await service.WriteAndEncodeMessageWithHeader(chatmsg, client1Id.Item2);
+
+                await service.WriteAndEncodeMessageWithHeader(msg, client1Id.Item2);
 
                 Console.ReadLine();
                 i++;
-            } while (i < 5);
+            } while (i < 20);
 
             Console.ReadLine();
         }
 
-        private static async Task<Tuple<int, NetworkStream>> SetupClient()
+        private static async Task<Tuple<int, NetworkStream>> SetupClient(string ip)
         {
             var client = new TcpClient();
 
-            client.Connect(new IPEndPoint(IPAddress.Parse("192.168.1.97"), 2500));
+            client.Connect(new IPEndPoint(IPAddress.Parse("172.30.142.49"), 2500));
 
             var random = new Random();
 
@@ -57,7 +81,7 @@ namespace TestServerApp
 
             var msg = new ConnectRequestMessage()
             {
-                UserId = 6,
+                UserId = 7,
                 ChatEnterMessage = "Hello"
             };
 
@@ -90,6 +114,11 @@ namespace TestServerApp
                         {
                             var newmsg = msg as ChatMessage;
                             Console.WriteLine($"Message from {newmsg.UserFromId} saying: {newmsg.Message}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Final:");
+                            Console.WriteLine(msg.MessageType);
                         }
                     }
                 }

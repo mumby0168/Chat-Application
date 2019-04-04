@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using Networking.Client.Application.EventArgs;
 using Networking.Client.Application.Events;
 using Networking.Client.Application.Models;
@@ -59,6 +60,13 @@ namespace Networking.Client.Application.ViewModels
         {
             string imagePath =_fileProcessorService.SelectFile();
             byte[] image = await _fileProcessorService.GetBytesFromImage(imagePath);
+
+            if (image.Length > ushort.MaxValue)
+            {
+                MessageBox.Show("Your image is to large!");
+                return; 
+            }
+
             ImageCount++;
             Images.Add(image);
         }
@@ -172,7 +180,7 @@ namespace Networking.Client.Application.ViewModels
                     UserFromId = (ushort) _currentUser.Id,
                     UserToId = (ushort) SocketUserId
                 });
-            }
+                }
         }
 
 

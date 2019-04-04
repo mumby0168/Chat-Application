@@ -26,7 +26,7 @@ namespace Sockets.DataStructures.Services
 
             await networkStream.ReadAsync(dataBuffer, 0, dataBuffer.Length);
 
-            Console.WriteLine(header.MessageType);
+            Console.WriteLine("message type being read in network service: " + header.MessageType);
 
             var dataBufferList = dataBuffer.ToList();
 
@@ -39,7 +39,7 @@ namespace Sockets.DataStructures.Services
                 case MessageType.Chat:
                     return ChatMessage.Decode(dataBufferList);
                 case MessageType.Image:
-                    return ImageMessage.Decode(dataBuffer);
+                    return ImageMessage.Decode(dataBufferList);
                 case MessageType.NewUserOnline:
                     return NewUserOnlineMessage.Decode(dataBufferList);
                 case MessageType.UserLogoff:

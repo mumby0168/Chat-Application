@@ -37,10 +37,12 @@ namespace Server.Controllers
             }
 
             Console.WriteLine("Please select a ip address to run on: ");
+
+            int input = int.Parse(Console.ReadLine());
             
 
             TcpListener tcpListener;
-            tcpListener = new TcpListener(ipaddresses[4], 2500);
+            tcpListener = new TcpListener(ipaddresses[input], 2500);
             tcpListener.Start();
 
             _connectionController.BeginReadingFromClients();
