@@ -34,7 +34,7 @@ namespace Networking.Client.Application
     public partial class App : PrismApplication
     {
 
-       ed private PaletteHelper _paletteHelper = new PaletteHelper();        
+       private PaletteHelper _paletteHelper = new PaletteHelper();        
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             var classes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Name.EndsWith("View"));
@@ -50,6 +50,7 @@ namespace Networking.Client.Application
             containerRegistry.RegisterSingleton<ICurrentUser, CurrentUser>();
             containerRegistry.RegisterSingleton<IChatManager, ChatManager>();
             containerRegistry.Register<INetworkDataService, NetworkDataService>();
+            containerRegistry.Register<IOverlayService, OverlayService>();
 
             
 

@@ -109,7 +109,7 @@ namespace Networking.Client.Application.ViewModels
             switch (args.Message.MessageType)
             {
                 case MessageType.NewUserOnline:
-                    await NewUserOnline(args.Message as NewUserOnlineMessage);
+                    NewUserOnline(args.Message as NewUserOnlineMessage);
                     break;
                 case MessageType.Chat:
                     NewChat(((ChatMessage)args.Message).UserFromId);
@@ -135,7 +135,7 @@ namespace Networking.Client.Application.ViewModels
                 SelectedSocketUser = OnlineSocketUsers.First();
         }
 
-        private async Task NewUserOnline(NewUserOnlineMessage newUserOnlineMessage)
+        private void NewUserOnline(NewUserOnlineMessage newUserOnlineMessage)
         {                                                               
             DispatchOnUiThread(() => ChangeUserToOnline(newUserOnlineMessage.UserId));
 

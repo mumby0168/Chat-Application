@@ -163,19 +163,9 @@ namespace Networking.Client.Application.ViewModels
         public DelegateCommand SelectImageCommand { get; set; }
 
 
-        //COMMAND METHODS
-
-        private bool _test = false;
+        //COMMAND METHODS       
         public async Task SendMessage()
         {
-            //_test = !_test;
-            //ChatMessages.Add(new ImageMessageModel()
-            //{
-            //    IsSent = _test,
-            //    TimeStamp = DateTime.Now,
-            //    ImageData = await _fileProcessorService.GetBytesFromImage(@"C:\Users\billy\Pictures\Game Art\rat-spritesheet.png")
-            //});
-
             if (string.IsNullOrWhiteSpace(Message) && !Images.Any()) Console.WriteLine("Please enter a message to send.");
 
             var chatMessage = new ChatMessage()
@@ -193,6 +183,8 @@ namespace Networking.Client.Application.ViewModels
 
             ImageCount = 0;
             Images = new ObservableCollection<byte[]>();
+
+            Message = string.Empty;
         }
 
         private async Task SendImages()

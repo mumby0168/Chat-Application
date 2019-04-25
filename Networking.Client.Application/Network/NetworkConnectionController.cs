@@ -114,7 +114,7 @@ namespace Networking.Client.Application.Network
 
                 _connectionSuccseful.Invoke();
             }
-            catch(Exception e)
+            catch(Exception)
             {
                if(_connectionFailedCallback == null) throw new Exception("No failed connection callback set.");
                _connectionFailedCallback.Invoke();            

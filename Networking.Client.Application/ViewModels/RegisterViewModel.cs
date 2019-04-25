@@ -25,12 +25,14 @@ namespace Networking.Client.Application.ViewModels
         private readonly IFileProcessorService _fileProcessorService;
         private readonly IRegionManager _regionManager;
         private readonly IPasswordProtectionService _passwordProtectionService;
+        private readonly IOverlayService _overlayService;
 
-        public RegisterViewModel(IFileProcessorService fileProcessorService, IRegionManager regionManager, IPasswordProtectionService passwordProtectionService)
+        public RegisterViewModel(IFileProcessorService fileProcessorService, IRegionManager regionManager, IPasswordProtectionService passwordProtectionService, IOverlayService overlayService)
         {
             _fileProcessorService = fileProcessorService;
             _regionManager = regionManager;
             _passwordProtectionService = passwordProtectionService;
+            _overlayService = overlayService;
             SelectImageCommand = new DelegateCommand(SelectImage);
             PasswordChangedCommand = new DelegateCommand<object>(PasswordChanged);
             RePasswordChangedCommand = new DelegateCommand<object>(RePasswordChanged);
@@ -140,7 +142,7 @@ namespace Networking.Client.Application.ViewModels
 
             if (errors.Count != 0)
             {
-                MessageBox.Show(string.Join(Environment.NewLine, errors));
+                _overlayService.DisplayError("Invalid Details", errors);
             }
 
             return (errors.Count == 0);

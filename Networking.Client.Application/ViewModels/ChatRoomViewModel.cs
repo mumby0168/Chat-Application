@@ -29,14 +29,16 @@ namespace Networking.Client.Application.ViewModels
         private readonly ICurrentUser _currentUser;
         private readonly IChatManager _chatManager;
         private readonly IRegionManager _regionManager;
+        private readonly IOverlayService _overlayService;
 
-        public ChatRoomViewModel(IEventAggregator eventAggregator, INetworkConnectionController networkConnectionController, ICurrentUser currentUser, IChatManager chatManager, IRegionManager regionManager)
+        public ChatRoomViewModel(IEventAggregator eventAggregator, INetworkConnectionController networkConnectionController, ICurrentUser currentUser, IChatManager chatManager, IRegionManager regionManager, IOverlayService overlayService)
         {
             _eventAggregator = eventAggregator;
             _networkConnectionController = networkConnectionController;
             _currentUser = currentUser;
             _chatManager = chatManager;
             _regionManager = regionManager;
+            _overlayService = overlayService;
 
             _eventAggregator.GetEvent<UserLoginEvent>().Subscribe(UserLogin);
             _eventAggregator.GetEvent<OfflineUsersLoadedEvent>().Subscribe(() => IsConnectAllowed = true);
@@ -124,7 +126,7 @@ namespace Networking.Client.Application.ViewModels
             IPAddress ipAddress;
             if (!IPAddress.TryParse(ServerModel.IpAddress, out ipAddress))
             {
-                MessageBox.Show("IP address invalid.");
+                _overlayService.DisplayError("Invalid IP Address", new List<string>{"Please check the IP Address entered."});
                 return;            
             }
 
@@ -136,7 +138,7 @@ namespace Networking.Client.Application.ViewModels
                 },
                 () =>
                 {
-                    MessageBox.Show("Failed Connecting to the server.");
+                    _overlayService.DisplayError("Connection Failed", new List<string>{"Please check the IP Address.", "Please check the port.", "The server may be down."});
                     ServerModel.ServerStatus = ServerStatus.Failed;
                 });
 

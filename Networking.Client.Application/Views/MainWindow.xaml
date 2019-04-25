@@ -16,6 +16,8 @@
 
     <Grid>
         <ContentControl prism:RegionManager.RegionName="{Binding Source={x:Static config:RegionNames.MainRegion}}"></ContentControl>
+
+        <ContentControl Visibility="{Binding Path=IsOverlayVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" prism:RegionManager.RegionName="{Binding Source={x:Static config:RegionNames.OverlayRegion}}"></ContentControl>
     </Grid>
 
 

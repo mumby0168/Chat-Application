@@ -33,14 +33,16 @@ namespace Networking.Client.Application.ViewModels
         private readonly IEventAggregator _eventAggregator;
         private readonly INetworkConnectionController _networkConnectionController;
         private readonly ICurrentUser _currentUser;
+        private readonly IOverlayService _overlayService;
 
-        public LoginViewModel(IRegionManager regionManager, IPasswordProtectionService passwordProtectionService, IEventAggregator eventAggregator, INetworkConnectionController networkConnectionController, ICurrentUser currentUser)
+        public LoginViewModel(IRegionManager regionManager, IPasswordProtectionService passwordProtectionService, IEventAggregator eventAggregator, INetworkConnectionController networkConnectionController, ICurrentUser currentUser, IOverlayService overlayService)
         {
             _regionManager = regionManager;
             _passwordProtectionService = passwordProtectionService;
             _eventAggregator = eventAggregator;
             _networkConnectionController = networkConnectionController;
             _currentUser = currentUser;
+            _overlayService = overlayService;
             PasswordChangedCommand =new DelegateCommand<object>(PasswordChanged);
             LoginCommand = new DelegateCommand(Login);
             RegisterCommand = new DelegateCommand(Register);                 
@@ -111,7 +113,7 @@ namespace Networking.Client.Application.ViewModels
 
             if (string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(Username))
             {
-                MessageBox.Show("Please enter some details");
+                _overlayService.DisplayError("Failed Login", new List<string> { "An account with those details could not be found." });
                 return;
             }
 
@@ -131,7 +133,7 @@ namespace Networking.Client.Application.ViewModels
 
             if (user == null)
             {
-                MessageBox.Show($"Username: {Username} not found");
+                _overlayService.DisplayError("Failed Login", new List<string>{"An account with those details could not be found."});
                 return;
             }
 

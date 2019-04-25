@@ -5,5 +5,7 @@
         public static string MainRegion => "MainRegion";
 
         public static string LeftPanel => "UsersRegion";
+
+        public static string OverlayRegion => "OverlayRegion";
     }
 }
