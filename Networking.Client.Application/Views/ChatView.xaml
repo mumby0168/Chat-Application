@@ -17,16 +17,69 @@
     <UserControl.Resources>
         <DataTemplate x:Key="TextTemplate" DataType="{x:Type models:ChatMessageModel}">
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="{Binding Message}"></TextBlock>
+                <Border Padding="10">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="2"></Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSent}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource SentMessageBrush}"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsSent}" Value="False">
+                                    <Setter Property="Background" Value="{StaticResource ReceivedMessageBrush}"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding Message}"></TextBlock>
+                    </StackPanel>
+                </Border>
                 <Separator/>
                 <TextBlock Text="{Binding TimeStamp, StringFormat={}{0:MM/dd/yyyy hh:mm tt}}"></TextBlock>
             </StackPanel>
         </DataTemplate>
         <DataTemplate x:Key="ImageTemplate" DataType="{x:Type models:ImageMessageModel}">
-            <StackPanel Orientation="Vertical">
-                <Image Width="100" Height="100" Source="{Binding Path=ImageData, Converter={StaticResource ByteArrayToBitMapConverter}}"></Image>
-                <Separator/>
-                <TextBlock Text="{Binding TimeStamp, StringFormat={}{0:MM/dd/yyyy hh:mm tt}}"></TextBlock>
+            <StackPanel>
+                <md:PackIcon VerticalAlignment="Top" HorizontalAlignment="Left" Kind="Image"></md:PackIcon>
+                <StackPanel Orientation="Vertical">
+                    <Image Width="100" Height="100" Source="{Binding Path=ImageData, Converter={StaticResource ByteArrayToBitMapConverter}}"></Image>
+                    <Separator Margin="0,7"/>
+                    <StackPanel Orientation="Horizontal">
+                        <md:PackIcon Kind="Send" Margin="5,0">
+                            <md:PackIcon.Style>
+                                <Style TargetType="md:PackIcon">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSent}" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsSent}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"></Setter>
+                                            <Setter Property="Foreground" Value="{StaticResource SentMessageBrush}"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </md:PackIcon.Style>
+                        </md:PackIcon>
+                        <md:PackIcon Kind="Envelope" Margin="5,0">
+                            <md:PackIcon.Style>
+                                <Style TargetType="md:PackIcon">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSent}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsSent}" Value="False">
+                                            <Setter Property="Visibility" Value="Visible"></Setter>
+                                            <Setter Property="Foreground" Value="{StaticResource ReceivedMessageBrush}"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </md:PackIcon.Style>
+                        </md:PackIcon>
+                        <TextBlock Text="{Binding TimeStamp, StringFormat={}{0:MM/dd/yyyy hh:mm tt}}"></TextBlock>
+                    </StackPanel>
+                    
+                    </StackPanel>
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>

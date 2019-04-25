@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -126,6 +127,9 @@ namespace Networking.Client.Application.ViewModels
 
             if (Password != ReEnterPassword)
                     errors.Add("Passwords do not match");
+
+            if (!new EmailAddressAttribute().IsValid(User.Email))
+                errors.Add("Please enter a valid email address.");
 
             using (var uow = new UnitOfWork(new SocketDbContext()))
             {

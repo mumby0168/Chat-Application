@@ -56,7 +56,7 @@ namespace Sockets.DataStructures.Services
         public async Task WriteAndEncodeMessageWithHeader(IMessage message, NetworkStream networkStream)
         {
             var messageData = message.Encode();
-            var header = new Header(message.MessageType, (ushort) messageData.Count);
+            var header = new Header(message.MessageType, (ulong) messageData.Count);
             var dataToWrite = new List<byte>();
             dataToWrite.AddRange(header.Encode());
             dataToWrite.AddRange(messageData);

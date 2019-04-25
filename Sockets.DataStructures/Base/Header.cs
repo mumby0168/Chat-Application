@@ -30,9 +30,9 @@ namespace Sockets.DataStructures.Base
 
         private List<byte> _encodedData;
 
-        private const byte ConstantHeaderSize = 11;
+        private const byte ConstantHeaderSize = 17;
     
-        public Header(MessageType messageType, ushort messageSize)
+        public Header(MessageType messageType, ulong messageSize)
         {
             MessageType = messageType;
             TimeStamp = DateTime.Now;
@@ -60,7 +60,7 @@ namespace Sockets.DataStructures.Base
 
         public DateTime TimeStamp { get; set; }
 
-        public ushort MessageSize { get; set; }
+        public UInt64 MessageSize { get; set; }
 
 
 
@@ -79,9 +79,9 @@ namespace Sockets.DataStructures.Base
 
             MessageType = (MessageType) headerData[0];
 
-            MessageSize = BitConverter.ToUInt16(headerData.GetRange(1, 2).ToArray(), 0);
+            MessageSize = BitConverter.ToUInt64(headerData.GetRange(1, 8).ToArray(), 0);
 
-            TimeStamp = DateTime.FromBinary(BitConverter.ToInt64(headerData.GetRange(3, 8).ToArray(), 0));
+            TimeStamp = DateTime.FromBinary(BitConverter.ToInt64(headerData.GetRange(9, 8).ToArray(), 0));
         }
     }
 }

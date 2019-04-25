@@ -22,6 +22,11 @@
                 <Setter Property="Width" Value="Auto"></Setter>
             </Style>
 
+            <SolidColorBrush x:Key="SentMessageBrush" Color="#383A47">
+            </SolidColorBrush>
+
+            <SolidColorBrush x:Key="ReceivedMessageBrush" Opacity="0.55" Color="#2195F2"></SolidColorBrush>
+
             <ControlTemplate x:Key="LoadingTemplate">
                 <ProgressBar HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True">
 

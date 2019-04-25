@@ -34,7 +34,7 @@ namespace Networking.Client.Application
     public partial class App : PrismApplication
     {
 
-        private PaletteHelper _paletteHelper = new PaletteHelper();        
+       ed private PaletteHelper _paletteHelper = new PaletteHelper();        
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             var classes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Name.EndsWith("View"));

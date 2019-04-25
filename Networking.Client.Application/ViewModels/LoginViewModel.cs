@@ -108,6 +108,13 @@ namespace Networking.Client.Application.ViewModels
 
         public async void Login()
         {
+
+            if (string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(Username))
+            {
+                MessageBox.Show("Please enter some details");
+                return;
+            }
+
             IsLoading = true;
             await LoginAsync();
             IsLoading = false;

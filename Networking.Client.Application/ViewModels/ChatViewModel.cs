@@ -54,18 +54,31 @@ namespace Networking.Client.Application.ViewModels
             _networkConnectionController.MessageReceivedEventHandler += MessageReceivedEventHandler;
 
             _eventAggregator.GetEvent<LogoffEvent>().Subscribe(Logoff);
+
+            ChatMessages.Add(new ChatMessageModel()
+            {
+                IsSent = true, 
+                Message = "Test Message",
+                TimeStamp = DateTime.Now
+            });
+            ChatMessages.Add(new ChatMessageModel()
+            {
+                IsSent = true,
+                Message = "Test Message",
+                TimeStamp = DateTime.Now
+            });
+            ChatMessages.Add(new ChatMessageModel()
+            {
+                IsSent = false,
+                Message = "Test Message",
+                TimeStamp = DateTime.Now
+            });          
         }
 
         private async void SelectImage()
         {
             string imagePath =_fileProcessorService.SelectFile();
-            byte[] image = await _fileProcessorService.GetBytesFromImage(imagePath);
-
-            if (image.Length > ushort.MaxValue)
-            {
-                MessageBox.Show("Your image is to large!");
-                return; 
-            }
+            byte[] image = await _fileProcessorService.GetBytesFromImage(imagePath);          
 
             ImageCount++;
             Images.Add(image);
@@ -151,21 +164,32 @@ namespace Networking.Client.Application.ViewModels
 
 
         //COMMAND METHODS
+
+        private bool _test = false;
         public async Task SendMessage()
         {
-            if(string.IsNullOrWhiteSpace(Message)) Console.WriteLine("Please enter a message to send.");
+            //_test = !_test;
+            //ChatMessages.Add(new ImageMessageModel()
+            //{
+            //    IsSent = _test,
+            //    TimeStamp = DateTime.Now,
+            //    ImageData = await _fileProcessorService.GetBytesFromImage(@"C:\Users\billy\Pictures\Game Art\rat-spritesheet.png")
+            //});
+
+            if (string.IsNullOrWhiteSpace(Message) && !Images.Any()) Console.WriteLine("Please enter a message to send.");
 
             var chatMessage = new ChatMessage()
             {
                 Message = Message,
-                UserFromId = (ushort) _currentUser.Id,
-                UserToId = (ushort) SocketUserId
+                UserFromId = (ushort)_currentUser.Id,
+                UserToId = (ushort)SocketUserId
             };
 
             if (Images.Any())
                 await SendImages();
 
-            await _chatManager.SendChatMessage(chatMessage);
+            if(!string.IsNullOrEmpty(Message))
+                await _chatManager.SendChatMessage(chatMessage);
 
             ImageCount = 0;
             Images = new ObservableCollection<byte[]>();
