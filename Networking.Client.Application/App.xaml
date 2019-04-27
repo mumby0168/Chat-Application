@@ -33,6 +33,13 @@
                 </ProgressBar>
             </ControlTemplate>
 
+            <Style x:Key="ListBoxItemContainerStyle" TargetType="ListBoxItem" BasedOn="{StaticResource MaterialDesignListBoxItem}">
+                <Setter Property="Margin" Value="0,4,0,0"></Setter>
+                <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignDivider}"></Setter>
+                <Setter Property="BorderThickness" Value="0,0,0,2"></Setter>
+            </Style>
+
+
             <!--User view data template-->
             <DataTemplate x:Key="UserListItemTemplate" DataType="model:SocketUser">
                 <Grid>

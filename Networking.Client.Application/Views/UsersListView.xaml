@@ -24,15 +24,11 @@
         </Grid.RowDefinitions>
         <GroupBox Margin="5" Grid.Row="0" Header="Online Users"  Style="{DynamicResource MaterialDesignGroupBox}">
             <ScrollViewer>
-            <ListBox SelectedItem="{Binding SelectedSocketUser}" ItemsSource="{Binding OnlineSocketUsers, UpdateSourceTrigger=PropertyChanged}">
+            <ListBox SelectedItem="{Binding SelectedSocketUser}" ItemsSource="{Binding OnlineSocketUsers, UpdateSourceTrigger=PropertyChanged}" ItemContainerStyle="{StaticResource ListBoxItemContainerStyle}">
+                 
                 <ListBox.ItemTemplate>
-                    <DataTemplate
+                        <DataTemplate
                     DataType="{x:Type model:SocketUser}">
-                        <Border
-                        x:Name="Border"
-                        Padding="8"
-                        BorderThickness="0 0 0 1"
-                        BorderBrush="{DynamicResource MaterialDesignDivider}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition
@@ -55,8 +51,7 @@
                                     Text="{Binding Email}" />
                                 </StackPanel>
                             </Grid>
-                        </Border>
-                        <DataTemplate.Triggers>
+                            <DataTemplate.Triggers>
                             <DataTrigger
                             Binding="{Binding IsMessageUnRead}"
                             Value="True">
@@ -85,7 +80,7 @@
 
         <GroupBox Margin="5" Grid.Row="1" Header="Offline Users"  Style="{DynamicResource MaterialDesignGroupBox}">
             <ScrollViewer>
-                <ListView IsHitTestVisible="False" ItemsSource="{Binding OfflineSocketUsers, UpdateSourceTrigger=PropertyChanged}">
+                <ListView ItemContainerStyle="{StaticResource ListBoxItemContainerStyle}" IsHitTestVisible="False" ItemsSource="{Binding OfflineSocketUsers, UpdateSourceTrigger=PropertyChanged}">
                     <ListView.Style>
                         <Style TargetType="ListView" BasedOn="{StaticResource MaterialDesignListView}">
                             <Style.Triggers>
@@ -98,30 +93,24 @@
                     <ListView.ItemTemplate>
                         <DataTemplate
                         DataType="{x:Type model:SocketUser}">
-                            <Border
-                            x:Name="Border"
-                            Padding="8"
-                            BorderThickness="0 0 0 1"
-                            BorderBrush="{DynamicResource MaterialDesignDivider}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition SharedSizeGroup="Checkerz" />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
-                                    <ToggleButton VerticalAlignment="Center" IsEnabled="False" Style="{StaticResource MaterialDesignActionLightToggleButton}">
-                                        <Image Source="{Binding ProfilePicture, Converter={StaticResource ByteArrayToBitMapConverter}, UpdateSourceTrigger=PropertyChanged}"></Image>
-                                    </ToggleButton>
-                                    <StackPanel
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="Checkerz" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <ToggleButton VerticalAlignment="Center" IsEnabled="False" Style="{StaticResource MaterialDesignActionLightToggleButton}">
+                                    <Image Source="{Binding ProfilePicture, Converter={StaticResource ByteArrayToBitMapConverter}, UpdateSourceTrigger=PropertyChanged}"></Image>
+                                </ToggleButton>
+                                <StackPanel
                                     Margin="8 0 0 0"
                                     Grid.Column="1">
-                                        <TextBlock
+                                    <TextBlock
                                         FontWeight="Bold"
                                         Text="{Binding Name}" />
-                                        <TextBlock
+                                    <TextBlock
                                         Text="{Binding Email}" />
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
+                                </StackPanel>
+                            </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
