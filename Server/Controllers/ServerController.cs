@@ -2,7 +2,6 @@ using System.Net;
 using System.Net.Sockets;
 using System;
 using System.Threading.Tasks;
-using Server.Args;
 using Server.Controllers;
 using Server.Controllers.Interfaces;
 using IConnectionController = Server.Controllers.Interfaces.IConnectionController;
@@ -21,9 +20,7 @@ namespace Server.Controllers
         {
             this._clientCreator = clientCreator;
             this._connectionController = connectionController;
-        }
-
-        public EventHandler<NewClientEventArgs> UserConnected { get; set; }
+        }      
 
         public void Begin()
         {

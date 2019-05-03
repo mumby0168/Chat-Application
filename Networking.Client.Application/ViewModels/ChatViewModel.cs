@@ -78,6 +78,9 @@ namespace Networking.Client.Application.ViewModels
         private async void SelectImage()
         {
             string imagePath =_fileProcessorService.SelectFile();
+
+            if(imagePath == null) return;
+
             byte[] image = await _fileProcessorService.GetBytesFromImage(imagePath);          
 
             ImageCount++;
@@ -151,7 +154,20 @@ namespace Networking.Client.Application.ViewModels
             set { _images = value; OnPropertyChanged(); }
         }
 
+        private bool _isErrorVisible;
+        private string _errorMessage;
 
+        public bool IsErrorVisible
+        {
+            get { return _isErrorVisible; }
+            set { _isErrorVisible = value; OnPropertyChanged();}    
+        }
+
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set { _errorMessage = value; OnPropertyChanged(); }
+        }
 
         #endregion
 
@@ -166,7 +182,22 @@ namespace Networking.Client.Application.ViewModels
         //COMMAND METHODS       
         public async Task SendMessage()
         {
-            if (string.IsNullOrWhiteSpace(Message) && !Images.Any()) Console.WriteLine("Please enter a message to send.");
+
+            if (SocketUserId == 0)
+            {
+                ErrorMessage = "Please select someone to send a message to.";
+                IsErrorVisible = true;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(Message) && !Images.Any())
+            {
+                ErrorMessage = "Please enter a message to send";
+                IsErrorVisible = true;
+                return;
+            }
+
+            IsErrorVisible = false;
 
             var chatMessage = new ChatMessage()
             {

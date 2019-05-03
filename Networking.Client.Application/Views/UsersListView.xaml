@@ -52,13 +52,13 @@
                                 </StackPanel>
                             </Grid>
                             <DataTemplate.Triggers>
-                            <DataTrigger
+                                <DataTrigger
                             Binding="{Binding IsMessageUnRead}"
                             Value="True">
                                     <DataTrigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" RepeatBehavior="Forever" Duration="0:0:4" From="1" To="0.2"/>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" RepeatBehavior="Forever" Duration="0:0:1" From="1" To="0.2"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </DataTrigger.EnterActions>
@@ -70,7 +70,7 @@
                                         </BeginStoryboard>
                                     </DataTrigger.ExitActions>
                                 </DataTrigger>
-                        </DataTemplate.Triggers>
+                            </DataTemplate.Triggers>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

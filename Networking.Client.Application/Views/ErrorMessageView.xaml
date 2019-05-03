@@ -10,9 +10,12 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"                       
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Border Margin="50" IsHitTestVisible="False"></Border>
-        <Border Margin="50" BorderBrush="{StaticResource PrimaryHueDarkBrush}" BorderThickness="15">
-            <Grid Background="{StaticResource MaterialDesignPaper}">
+        <Border IsHitTestVisible="False" BorderThickness="50, 50" BorderBrush="#30FFFFFF">
+        </Border>
+
+        <md:TransitioningContent Margin="50,50" OpeningEffect="{md:TransitionEffect ExpandIn}"  >
+        <Border  BorderBrush="{StaticResource PrimaryHueDarkBrush}" BorderThickness="15">
+                <Grid Background="{StaticResource MaterialDesignPaper}">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition Height="3*"/>
@@ -50,5 +53,6 @@
 
             </Grid>
         </Border>
+        </md:TransitioningContent>
     </Grid>
 </UserControl>
