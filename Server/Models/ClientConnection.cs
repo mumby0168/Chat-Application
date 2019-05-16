@@ -3,6 +3,9 @@ using Sockets.DataStructures.Services.Interfaces;
 
 namespace Server.Models
 {
+    /// <summary>
+    /// An interface to represent a client connection.
+    /// </summary>
     public interface IClientConnection
     {
         int UserId { get; }

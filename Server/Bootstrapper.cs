@@ -10,6 +10,9 @@ using Sockets.DataStructures.Services.Interfaces;
 
 namespace Server
 {
+    /// <summary>
+    /// Boostrapper to allow registration of types into DI container.
+    /// </summary>
     public static class Bootstrapper
     {
         private static IUnityContainer _unityContainer;
@@ -17,6 +20,9 @@ namespace Server
 
         public static IServerController GetController() => _unityContainer.Resolve<IServerController>();
 
+        /// <summary>
+        /// Sets up the DI Container.
+        /// </summary>
         public static void Setup()
         {
             _unityContainer = new UnityContainer();

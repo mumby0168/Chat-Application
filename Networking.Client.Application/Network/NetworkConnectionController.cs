@@ -30,6 +30,7 @@ namespace Networking.Client.Application.Network
         {
             _networkDataService = networkDataService;
             _currentUser = currentUser;
+            _cancellationTokenSource = new CancellationTokenSource();
            
         }        
 
