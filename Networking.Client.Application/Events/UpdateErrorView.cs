@@ -8,5 +8,8 @@ using Prism.Events;
 
 namespace Networking.Client.Application.Events
 {
+    /// <summary>
+    /// An event that occurs when the error view should be updated.
+    /// </summary>
     public class UpdateErrorView : PubSubEvent<UpdateErrorViewEventArgs> {}
 }

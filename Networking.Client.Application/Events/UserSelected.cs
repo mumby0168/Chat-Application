@@ -7,6 +7,9 @@ using Prism.Events;
 
 namespace Networking.Client.Application.Events
 {
+    /// <summary>
+    /// An event that occurs when a user is selected.
+    /// </summary>
     class UserSelected : PubSubEvent<int>
     {
     }

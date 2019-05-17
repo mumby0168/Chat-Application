@@ -10,6 +10,9 @@ using Networking.Client.Application.Models;
 
 namespace Networking.Client.Application.Converters
 {
+    /// <summary>
+    /// Hanldes teh selection of UI Template to use dependant on model type.
+    /// </summary>
     class ChatTypeTemplateSelector : DataTemplateSelector
     {
         public override DataTemplate SelectTemplate(object item, DependencyObject container)

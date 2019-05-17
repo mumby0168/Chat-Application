@@ -36,6 +36,7 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <ToggleButton
+                                    IsEnabled="False"
                                 VerticalAlignment="Center"                                
                                 Style="{StaticResource MaterialDesignActionLightToggleButton}"
                                  >

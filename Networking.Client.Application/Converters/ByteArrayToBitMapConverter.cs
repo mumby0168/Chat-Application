@@ -12,6 +12,9 @@ using Networking.Client.Application.Properties;
 
 namespace Networking.Client.Application.Converters
 {
+   /// <summary>
+   /// Handles the conversion of a byte array to a bitmap image and the reverse.
+   /// </summary>
     public class ByteArrayToBitMapConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -37,6 +40,9 @@ namespace Networking.Client.Application.Converters
         }
     }
 
+    /// <summary>
+    /// Hanldes the conversion of a byte array to stream source and the reverse.
+    /// </summary>
     public class ByteArrayToStreamSource : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

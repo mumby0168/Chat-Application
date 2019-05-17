@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Networking.Client.Application.Models
 {
+    /// <summary>
+    /// A model to encapsulate the data required for a image message.
+    /// </summary>
     public class ImageMessageModel
     {
         public bool IsSent { get; set; }

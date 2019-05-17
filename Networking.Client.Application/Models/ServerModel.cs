@@ -17,6 +17,9 @@ namespace Networking.Client.Application.Models
         Failed
     }
 
+    /// <summary>
+    /// A model to encapsulate the data needed to connect to the server.
+    /// </summary>
     public class ServerModel : INotifyPropertyChanged
     {
         private string _ipAddress;

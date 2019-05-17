@@ -9,6 +9,9 @@ using User.System.Core.Model;
 
 namespace Networking.Client.Application.Network.Interfaces
 {
+    /// <summary>
+    /// A manager to handle all of the interactions with chats from the sever.
+    /// </summary>
     public interface IChatManager
     {
         Dictionary<int, List<object>> Chats { get; set; }

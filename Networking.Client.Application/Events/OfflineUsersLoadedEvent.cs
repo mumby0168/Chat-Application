@@ -7,6 +7,9 @@ using Prism.Events;
 
 namespace Networking.Client.Application.Events
 {
+    /// <summary>
+    /// An event that occurs when a new users data has been loaded from the database.
+    /// </summary>
     public class OfflineUsersLoadedEvent : PubSubEvent
     {
     }

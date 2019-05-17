@@ -7,6 +7,9 @@ using Prism.Events;
 
 namespace Networking.Client.Application.Events
 {
+    /// <summary>
+    /// Event to be sent to indicate the base colour of the application changing.
+    /// </summary>
     public class ChangeBaseColourEvent : PubSubEvent<bool>
     {
     }

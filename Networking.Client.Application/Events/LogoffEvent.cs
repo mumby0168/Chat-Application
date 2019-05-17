@@ -7,6 +7,9 @@ using Prism.Events;
 
 namespace Networking.Client.Application.Events
 {
+    /// <summary>
+    /// An event to be sent when the user logs off.
+    /// </summary>
     public class LogoffEvent : PubSubEvent
     {
     }

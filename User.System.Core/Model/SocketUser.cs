@@ -10,8 +10,7 @@ namespace User.System.Core.Model
 {
     public class SocketUser : INotifyPropertyChanged
     {
-        private int _id;
-
+        private int _id;        
         public int Id
         {
             get => _id;

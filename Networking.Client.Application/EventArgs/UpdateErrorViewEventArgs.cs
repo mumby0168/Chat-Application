@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Networking.Client.Application.EventArgs
 {
+    /// <summary>
+    /// Event arguments to be sent when an update to the error window needs to be made.
+    /// </summary>
     public class UpdateErrorViewEventArgs
     {
         public UpdateErrorViewEventArgs(string title, List<string> messages = null)

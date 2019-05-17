@@ -8,6 +8,9 @@ using User.System.Core.Model;
 
 namespace Networking.Client.Application.Events
 {
+    /// <summary>
+    /// An event that occurs when changes are made a users profile.
+    /// </summary>
     class UserEditedEvent : PubSubEvent<SocketUser>
     {
     }
