@@ -36,7 +36,9 @@ namespace Server.Controllers
             Console.WriteLine("Please select a ip address to run on: ");
 
             int input = int.Parse(Console.ReadLine());
-            
+
+            Console.WriteLine($"The IP Address selected is: {ipaddresses[input]}");
+
 
             TcpListener tcpListener;
             tcpListener = new TcpListener(ipaddresses[input], 2500);
@@ -62,14 +64,14 @@ namespace Server.Controllers
             var listener = (TcpListener)asyncResult.AsyncState;
 
             var newClient = listener.EndAcceptTcpClient(asyncResult);
-            System.Console.WriteLine("Completed ending of connectio.");
+            System.Console.WriteLine("Completed ending of connection.");
 
             var result = await _clientCreator.TryAddUser(newClient);
 
             if (!result)
             {
                 newClient.Close();
-                System.Console.WriteLine("Closing Connecition");
+                Console.WriteLine("Closing Connecition");
             }
         }
     }

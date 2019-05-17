@@ -30,7 +30,14 @@ namespace Networking.Client.Application.ViewModels
         private readonly INetworkConnectionController _networkConnectionController;
         private readonly IFileProcessorService _fileProcessorService;
 
-
+        /// <summary>
+        /// Creates an instance of the chat view model and resolves its dependencies
+        /// </summary>
+        /// <param name="eventAggregator"></param>
+        /// <param name="chatManager"></param>
+        /// <param name="currentUser"></param>
+        /// <param name="networkConnectionController"></param>
+        /// <param name="fileProcessorService"></param>
         public ChatViewModel(IEventAggregator eventAggregator, IChatManager chatManager, ICurrentUser currentUser, INetworkConnectionController networkConnectionController, IFileProcessorService fileProcessorService)
         {
             _eventAggregator = eventAggregator;
@@ -228,7 +235,7 @@ namespace Networking.Client.Application.ViewModels
                     UserFromId = (ushort) _currentUser.Id,
                     UserToId = (ushort) SocketUserId
                 });
-                }
+            }
         }
 
 

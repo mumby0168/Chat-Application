@@ -60,6 +60,9 @@ namespace Networking.Client.Application.ViewModels
         public async void SelectImage()
         {
             var imagePath = _fileProcessorService.SelectFile();
+
+            if(imagePath == null) return;
+
             SocketUser.ProfilePicture = await _fileProcessorService.GetBytesFromImage(imagePath);
         }
 

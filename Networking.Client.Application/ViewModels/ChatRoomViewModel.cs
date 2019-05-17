@@ -31,8 +31,18 @@ namespace Networking.Client.Application.ViewModels
         private readonly IRegionManager _regionManager;
         private readonly IOverlayService _overlayService;
 
+        /// <summary>
+        /// Creates an instance of the chat room view model and resolves its dependencies
+        /// </summary>
+        /// <param name="eventAggregator"></param>
+        /// <param name="networkConnectionController"></param>
+        /// <param name="currentUser"></param>
+        /// <param name="chatManager"></param>
+        /// <param name="regionManager"></param>
+        /// <param name="overlayService"></param>
         public ChatRoomViewModel(IEventAggregator eventAggregator, INetworkConnectionController networkConnectionController, ICurrentUser currentUser, IChatManager chatManager, IRegionManager regionManager, IOverlayService overlayService)
         {
+            //assigns local variables
             _eventAggregator = eventAggregator;
             _networkConnectionController = networkConnectionController;
             _currentUser = currentUser;
@@ -44,14 +54,14 @@ namespace Networking.Client.Application.ViewModels
             _eventAggregator.GetEvent<OfflineUsersLoadedEvent>().Subscribe(() => IsConnectAllowed = true);
             _eventAggregator.GetEvent<UserEditedEvent>().Subscribe((user) => User = user);
 
-
+            //Sets up the basic server settings
             ServerModel = new ServerModel();
             ServerModel.IpAddress = "192.168.1.97";
             ServerModel.Port = 2500;
             ServerModel.ServerStatus = ServerStatus.Disconnected;
 
+            //Sets up command executions
             ServerConnectCommand = new DelegateCommand(Connect);
-
             ToggleBaseCommand = new DelegateCommand<object>(ToggleBaseColor);
             CurrentUserClickedCommand = new DelegateCommand(CurrentUserClicked);
             LogoutCommand = new DelegateCommand(Logout);
@@ -102,7 +112,10 @@ namespace Networking.Client.Application.ViewModels
         #endregion
 
         //COMMAND METHODS
-
+        
+        /// <summary>
+        /// Logs the user out of their account and disconnects them from the server.
+        /// </summary>
         public void Logout()
         {
             _networkConnectionController.SendMessage(new UserLogoffMessage {UsersId = (ushort) _currentUser.Id});
@@ -112,14 +125,20 @@ namespace Networking.Client.Application.ViewModels
             _regionManager.RequestNavigate(RegionNames.MainRegion, nameof(LoginView));         
             _eventAggregator.GetEvent<LogoffEvent>().Publish();
             IsConnectAllowed = false;
-            System.Windows.Forms.Application.Idle -= ApplicationOnIdle;
         }
 
+        /// <summary>
+        /// Toggles the base color.
+        /// </summary>
+        /// <param name="value"></param>
         public void ToggleBaseColor(object value)
         {
             _eventAggregator.GetEvent<ChangeBaseColourEvent>().Publish(!(bool)value);
         }
 
+        /// <summary>
+        /// Connects the user to the server.
+        /// </summary>
         public void Connect()
         {
 
@@ -141,15 +160,11 @@ namespace Networking.Client.Application.ViewModels
                     _overlayService.DisplayError("Connection Failed", new List<string>{"Please check the IP Address.", "Please check the port.", "The server may be down."});
                     ServerModel.ServerStatus = ServerStatus.Failed;
                 });
-
-            System.Windows.Forms.Application.Idle += ApplicationOnIdle;
         }
 
-        private void ApplicationOnIdle(object sender, System.EventArgs e)
-        {
-            
-        }
-
+        /// <summary>
+        /// Executes when the current user changes.
+        /// </summary>
         public void CurrentUserClicked()
         {
             _regionManager.RequestNavigate(RegionNames.LeftPanel, nameof(EditProfileView));
@@ -157,7 +172,10 @@ namespace Networking.Client.Application.ViewModels
         }
 
         #region Event Methods
-
+        /// <summary>
+        /// Executes when the user logs in.
+        /// </summary>
+        /// <param name="user"></param>
         public void UserLogin(SocketUser user)
         {
             User = user;
